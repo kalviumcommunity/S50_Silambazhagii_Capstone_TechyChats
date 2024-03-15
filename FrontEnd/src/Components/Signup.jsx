@@ -7,6 +7,8 @@ import Cookies from "js-cookie";
 import bg from '../assets/signup-bg.png'
 
 function Signup() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -20,7 +22,7 @@ function Signup() {
       const response = await axios.post('http://localhost:3000/users', data);
       console.log(response.data); 
       setSub(true);
-      // navigate("/main");
+      navigate("/main");
     } catch (error) {
       console.error('Error occurred while submitting:', error);
     }

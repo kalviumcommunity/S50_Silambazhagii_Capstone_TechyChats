@@ -10,7 +10,6 @@ connectDB();
 
 app.use(express.json());
 
-// Adding CORS middleware
 app.use(cors());
 
 app.get('/ping', (req, res) => {
