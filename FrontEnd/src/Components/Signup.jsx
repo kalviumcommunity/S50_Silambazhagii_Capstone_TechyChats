@@ -14,12 +14,18 @@ function Signup() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    setSub(true);
-    navigate("/main");
-    
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      const response = await axios.post('http://localhost:3000/users', data);
+      console.log(response.data); 
+      setSub(true);
+      // navigate("/main");
+    } catch (error) {
+      console.error('Error occurred while submitting:', error);
+    }
   };
+  
 
   const password = watch("password", " ");
 
@@ -49,7 +55,7 @@ function Signup() {
             Name
           </label>
           <input
-            {...register("Name", {
+            {...register("name", {
               required: "Name is required",
               minLength: {
                 value: 3,
@@ -93,16 +99,28 @@ function Signup() {
         
         <div className="mb-4">
           <label
+            htmlFor="Bio"
             className="block text-sm font-semibold text-gray-600 mb-1"
           >
-            Add Bio
+            Bio
           </label>
           <input
-            id="bio"
-            type="bio"
+            {...register("bio", {
+              minLength: {
+                value: 4,
+                message: "Minimum length is 4 characters",
+              },
+            })}
+            id="Bio"
+            type="text"
             className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
             placeholder="Enter your Bio"
           />
+          {errors.Bio && (
+            <span className="text-red-600 text-sm">
+              {errors.Bio.message}
+            </span>
+          )}
         </div>
 
         <div className="mb-4">
@@ -145,7 +163,7 @@ function Signup() {
             Repeat Password
           </label>
           <input
-            {...register("repeatPassword", {
+            {...register("repeat_password", {
               required: "Repeat Password is required",
               validate: (value) =>
                 value === password || "Password doesn't match",
@@ -163,29 +181,12 @@ function Signup() {
             className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
             placeholder="Repeat your Password"
           />
-          {errors.repeatPassword && (
+          {errors.repeat_password && (
             <span className="text-red-600 text-sm">
-              {errors.repeatPassword.message}
+              {errors.repeat_password.message}
             </span>
           )}
         </div>
-
-        <div className="flex text-sm">
-          <input
-            type="checkbox"
-            id="agree"
-            {...register("agree", {
-              required: " You must accept all the terms and conditions",
-            })}
-          />
-          <label className="ml-3 cursor-pointer">
-            I agree all statements in{" "}
-            <span className="underline">Terms of service</span>
-          </label>
-        </div>
-        {errors.agree && (
-          <span className="text-red-600 text-sm">{errors.agree.message}</span>
-        )}
 
         <div className="flex justify-center mt-3">
           <button
@@ -200,8 +201,7 @@ function Signup() {
           </button>
         </div>
         <div className="text-sm text-center mt-4">
-          {" "}
-          Already have an account ?{" "}
+          Already have an account ?
           <span className="underline font-bold cursor-pointer">Login here</span>
         </div>
       </form>

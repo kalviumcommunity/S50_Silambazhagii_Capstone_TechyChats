@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router(); 
 const postModel = require('../Schema/postModel');
 
-router.get("/users", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const data = await postModel.find();
         res.json(data);

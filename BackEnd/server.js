@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors'); // Importing the CORS middleware
 const app = express();
 const connectDB = require('./config.js/connect');
 const port = 3000; 
@@ -9,7 +10,10 @@ connectDB();
 
 app.use(express.json());
 
-app.get('/ping', ( req , res ) => {
+// Adding CORS middleware
+app.use(cors());
+
+app.get('/ping', (req, res) => {
     res.send("pong");
 });
 
