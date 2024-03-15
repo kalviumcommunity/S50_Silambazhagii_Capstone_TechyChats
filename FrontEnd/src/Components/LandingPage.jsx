@@ -9,7 +9,10 @@ function LandingPage() {
       <nav className=' flex justify-between text-white font-semibold text-lg px-7'>
         <div className=' text-2xl mt-7 ml-7'>TechyChats</div>
         <div>
-        <button className='mr-7 mt-3'>About</button>
+        <Link to='./about'>
+          <button className='mr-7 mt-3'>About
+          </button>
+          </Link>
         <Link to = '/signup'>
         <button>Signup</button>
         </Link>

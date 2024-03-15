@@ -192,7 +192,7 @@ function Signup() {
             type="submit"
             className="w-full text-white px-4 py-2 rounded cursor-pointer"
             style={{
-              background: "linear-gradient(90deg, #3498db, #2ecc71)",
+              background: "linear-gradient(90deg, #1a202c, #2d3748)",
               border: "none",
             }}
           >
