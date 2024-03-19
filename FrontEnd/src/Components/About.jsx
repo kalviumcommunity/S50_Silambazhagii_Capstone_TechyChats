@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LocomotiveScroll from "locomotive-scroll";
 import "./style.css"; 
+import { Link } from "react-router-dom";
 function Abt() {
   const canvasRef = useRef(null);
 
@@ -159,7 +160,7 @@ function files(index) {
         <h3>
           <b>TECHY</b>CHATS
         </h3>
-        <button>Close</button>
+        <Link to = '/landing'><button>Close</button></Link>
       </div>
       <div id="main">
         <div id="page">

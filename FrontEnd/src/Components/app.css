@@ -1,5 +1,6 @@
 .body1 {
     background-image: url('../assets/Home.png');
+    font-family: sans-serif;
 }
 
 body{
@@ -21,25 +22,22 @@ body{
     position: relative;
     overflow: hidden;
 }
-
-.page1{
-    height: 100vh;
-    width: 100vw;
-    background-color: red;
+.mainbody{
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-.page2{
-    height: 100vh;
-    width: 100vw;
-    background-color: rgb(0, 0, 0);
-}
+/* app.css */
+@media only screen and (max-width: 768px) {
+    /* Adjustments for smaller screens */
+    .mainBox {
+      flex-direction: column;
+    }
+    .content{
+        display: flex;
+    }
 
-.page3{
-    height: 100vh;
-    width: 100vw;
-    background-color: rgb(23, 67, 186);
-}
-canvas{
-    max-width: 100vw;
-    max-height: 100vh;
-}
+  }
+  

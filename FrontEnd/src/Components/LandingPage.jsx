@@ -17,10 +17,13 @@ function LandingPage() {
         </Link>
         </div>
       </nav>
-      <div className='text-white text-7xl text- text-center item-center mt-32'>Where Tech Enthusiasts Connect
+
+      <div className='text-white text-7xl text- text-center item-center mt-32 font-family: gilroy '>Where Tech Enthusiasts Connect
       <br/>
        and Explore.</div>
-    <button className='bg-white px-16 font-semibold rounded-md mt-48 py-3'>Get Started</button>
+   <Link to = '/main'>
+   <button className='bg-white px-16 font-semibold rounded-md mt-48 py-3'>Get Started</button>
+   </Link>
     </div>
 </>
   )
