@@ -76,7 +76,7 @@ function MainPage() {
           <div className="hover:text-gray-500 cursor-pointer">Software</div>
           <div className="hover:text-gray-500 cursor-pointer">Future Tech</div>
           <div className="hover:text-gray-500 cursor-pointer">Autonomous Vehicles</div>
-          <div className=" cursor-pointer">
+          <div className="cursor-pointer">
             <img src={forward} alt="" width={35} />
           </div>
         </div>
