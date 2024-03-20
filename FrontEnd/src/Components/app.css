@@ -28,16 +28,3 @@ body{
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
-/* app.css */
-@media only screen and (max-width: 768px) {
-    /* Adjustments for smaller screens */
-    .mainBox {
-      flex-direction: column;
-    }
-    .content{
-        display: flex;
-    }
-
-  }
-  
