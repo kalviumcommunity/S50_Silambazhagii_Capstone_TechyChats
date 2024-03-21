@@ -3,6 +3,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import "./app.css";
+import bg from '../assets/bg.png'
+
 
 function Signup() {
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ function Signup() {
   return (
     <div
       className="signup w-screen h-screen flex justify-end overflow-y-hidden"
-      style={{ backgroundImage: `url(https://getwallpapers.com/wallpaper/full/3/5/a/648253.jpg)`, backgroundSize: "cover" }}
+      style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover" }}
 
     >
       <div className="container h-screen mt-10">
@@ -55,7 +58,7 @@ function Signup() {
           )}
 
           <div className="mb-4 flex justify-center">
-            <button className="flex items-center justify-center border rounded-full px-7">
+            <button className=" mt-1 flex items-center justify-center border rounded-full px-7">
               <div>Sign Up With Google</div>
               <div>
                 <img
@@ -66,6 +69,8 @@ function Signup() {
               </div>
             </button>
           </div>
+
+          <div className=" text-center mb-1 mt-1">Or</div>
 
           <div className="mb-4">
             <label className="block text-sm font-semibold text-gray-600 mb-1">

@@ -3,6 +3,8 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import "./app.css";
+import bg from '../assets/bg.png'
 
 function Login() {
 
@@ -27,8 +29,9 @@ function Login() {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log(data)
     const user = userData.find(
-      (user) => user.Email === data.Email && user.Password === data.Password
+      (user) => user.email === data.Email && user.password === data.Password
     );
 
     if (user) {
@@ -41,7 +44,7 @@ function Login() {
   return (
     <div
       className="login w-screen h-screen flex justify-center items-center"
-      style={{ backgroundImage: `url(https://getwallpapers.com/wallpaper/full/3/5/a/648253.jpg)`, backgroundSize: "cover" }}
+      style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover" }}
     >
       <div className=" absolute mt-48 text-white">TechyChats</div>
       <div className="container mx-auto">
@@ -52,6 +55,20 @@ function Login() {
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-md mx-auto p-4 border rounded-lg items-center justify-center shadow-lg bg-white"
         >
+          <div className="mb-4 flex justify-center">
+            <button className=" mt-1 flex items-center justify-center border rounded-full px-7">
+              <div>Login With Google</div>
+              <div>
+                <img
+                  src="https://cdn-teams-slug.flaticon.com/google.jpg"
+                  width={50}
+                  alt=""
+                />
+              </div>
+            </button>
+          </div>
+
+          <div className=" text-center mb-1 mt-1">Or</div>
           <div className="mb-4">
             <label
               htmlFor="email"
