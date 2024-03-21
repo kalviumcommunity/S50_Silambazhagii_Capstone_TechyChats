@@ -65,7 +65,7 @@ function MainPage() {
           </div>
         </nav>
 
-        <div className="shadow-md mt-5 w-full py-3  flex justify-evenly items-center">
+        <div className=" nav-container shadow-md mt-5 w-full py-3  flex justify-evenly items-center">
           <div className="cursor-pointer">
             <img src={backward} alt="" width={35} />
           </div>

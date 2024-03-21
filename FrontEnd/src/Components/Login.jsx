@@ -2,10 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
-import bg from "../assets/signup-bg.png"; 
-import './app.css'
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
 
@@ -43,15 +40,17 @@ function Login() {
 
   return (
     <div
-      className="login w-screen loginpage justify-center items-center h-screen"
+      className="login w-screen h-screen flex justify-center items-center"
+      style={{ backgroundImage: `url(https://getwallpapers.com/wallpaper/full/3/5/a/648253.jpg)`, backgroundSize: "cover" }}
     >
-      <div className="container w-screen h-screen">
-        <div className=" text-center text-white items-center justify-center text-4xl font-bold ">
+      <div className=" absolute mt-48 text-white">TechyChats</div>
+      <div className="container mx-auto">
+        <div className="text-center text-white text-4xl font-bold mb-8">
           LOGIN
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="max-w-md mx-auto my-4 p-4 border rounded-lg items-center justify-center shadow-lg bg-white"
+          className="max-w-md mx-auto p-4 border rounded-lg items-center justify-center shadow-lg bg-white"
         >
           <div className="mb-4">
             <label
@@ -118,6 +117,12 @@ function Login() {
             >
               Login
             </button>
+          </div>
+          <div className="text-sm text-center mt-4">
+            Don't have an account?
+            <span className="underline font-bold cursor-pointer">
+             <Link to='/signup'> Sign up here</Link>
+            </span>
           </div>
         </form>
       </div>

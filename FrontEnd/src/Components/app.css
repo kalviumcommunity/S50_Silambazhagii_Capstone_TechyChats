@@ -13,8 +13,10 @@ body{
     width: 100%;
     padding: 0 20px;
 }
-.signup {
-    display: flex;
+.signup{
+    backdrop-filter: blur(2px);
+    width: 100%;
+    padding: 0 20px;
     justify-content: center;
     align-items: center;
   }
@@ -28,7 +30,10 @@ body{
     margin-top: 10px;
     margin-bottom: 10px;
 }
-.loginpage{
-    background-image: url('../assets/Home.png');
-
+.login{
+    backdrop-filter: blur(2px);
+    width: 100%;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
 }
