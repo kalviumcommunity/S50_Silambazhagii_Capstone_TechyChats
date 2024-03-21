@@ -9,7 +9,6 @@ import profile from "../assets/profile.jpeg";
 import claps from "../assets/claps.jpeg";
 import comments from "../assets/comments.png";
 import bookmark from "../assets/bookmark.jpeg";
-// import image from "../assets/image.jpeg";
 import addPost from "../assets/addPost.png";
 
 function MainPage() {
@@ -30,7 +29,7 @@ function MainPage() {
     <>
       <div className="mainbody">
         <nav className="flex justify-between text-center items-center ">
-          <div>TechyChats</div>
+          <div className="font-semibold text-3xl tracking-widest">TECHY CHATS</div>
           <div class="relative">
             <input
               class="bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
