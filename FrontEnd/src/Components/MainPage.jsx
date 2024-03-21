@@ -48,9 +48,11 @@ function MainPage() {
           </div>
           <div className="flex text-center items-center">
             <div className="">
+              <Link to='/login'>
               <button className="mr-5 bg-gray-500 rounded px-8 text-white py-1.5">
                 Login
               </button>
+              </Link>
               <Link to="/signup">
                 <button className="mr-10 bg-gray-500 rounded px-8 text-white py-1.5">
                   Signup
@@ -63,7 +65,7 @@ function MainPage() {
           </div>
         </nav>
 
-        <div className="shadow-md mt-5 w-full py-3  flex justify-evenly items-center">
+        <div className=" nav-container shadow-md mt-5 w-full py-3  flex justify-evenly items-center">
           <div className="cursor-pointer">
             <img src={backward} alt="" width={35} />
           </div>
@@ -71,12 +73,16 @@ function MainPage() {
           <div className="hover:text-gray-500 cursor-pointer">Technology</div>
           <div className="hover:text-gray-500 cursor-pointer">Blockchain</div>
           <div className="hover:text-gray-500 cursor-pointer">Gadgets</div>
-          <div className="hover:text-gray-500 cursor-pointer">Problem Solving</div>
+          <div className="hover:text-gray-500 cursor-pointer">
+            Problem Solving
+          </div>
           <div className="hover:text-gray-500 cursor-pointer">Phones</div>
           <div className="hover:text-gray-500 cursor-pointer">Software</div>
           <div className="hover:text-gray-500 cursor-pointer">Future Tech</div>
-          <div className="hover:text-gray-500 cursor-pointer">Autonomous Vehicles</div>
-          <div className=" cursor-pointer">
+          <div className="hover:text-gray-500 cursor-pointer">
+            Autonomous Vehicles
+          </div>
+          <div className="cursor-pointer">
             <img src={forward} alt="" width={35} />
           </div>
         </div>
@@ -88,10 +94,7 @@ function MainPage() {
                 <div className="flex content flex-wrap">
                   <div className="box">
                     {posts.map((post) => (
-                      <div
-                        className="flex mt-7 items-center"
-                        key={post.id}
-                      >
+                      <div className="flex mt-7 items-center" key={post.id}>
                         <div className="w-4/5 mainBox">
                           <div>
                             <h1 className="font-semibold text-2xl">
@@ -130,7 +133,12 @@ function MainPage() {
                           </div>
                         </div>
                         <div className="ml-10">
-                          <img src={posts.image_url} alt="" width={200} height={50} />
+                          <img
+                            src={posts.image_url}
+                            alt=""
+                            width={200}
+                            height={50}
+                          />
                         </div>
                       </div>
                     ))}
@@ -152,7 +160,7 @@ function MainPage() {
               <div className=" shadow-xl items-center flex justify-center py-5 mt-5">
                 <img
                   src={profile}
-                  width={20}
+                  width={35}
                   className=" rounded-full"
                   alt=""
                 />
@@ -162,7 +170,7 @@ function MainPage() {
               <div className=" shadow-xl items-center flex justify-center py-5 mt-5">
                 <img
                   src={profile}
-                  width={20}
+                  width={35}
                   className=" rounded-full"
                   alt=""
                 />
@@ -172,7 +180,7 @@ function MainPage() {
               <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
                 <img
                   src={profile}
-                  width={20}
+                  width={35}
                   className=" rounded-full"
                   alt=""
                 />
@@ -182,7 +190,7 @@ function MainPage() {
               <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
                 <img
                   src={profile}
-                  width={20}
+                  width={35}
                   className=" rounded-full"
                   alt=""
                 />
@@ -192,7 +200,7 @@ function MainPage() {
               <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
                 <img
                   src={profile}
-                  width={20}
+                  width={35}
                   className=" rounded-full"
                   alt=""
                 />

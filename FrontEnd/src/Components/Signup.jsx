@@ -1,10 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import Cookies from "js-cookie";
-import bg from "../assets/signup-bg.png";
+import "./app.css";
+import bg from '../assets/bg.png'
+
 
 function Signup() {
   const navigate = useNavigate();
@@ -33,10 +34,11 @@ function Signup() {
 
   return (
     <div
-      className="signup w-screen justify-center items-center h-screen"
-      style={{ backgroundImage: `url(${bg})` }}
+      className="signup w-screen h-screen flex justify-end overflow-y-hidden"
+      style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover" }}
+
     >
-      <div className="container  w-screen h-screen mt-10">
+      <div className="container h-screen mt-10">
         <div className="text-center text-white text-4xl font-bold ">
           CREATE ACCOUNT
         </div>
@@ -56,7 +58,7 @@ function Signup() {
           )}
 
           <div className="mb-4 flex justify-center">
-            <button className="flex items-center justify-center border rounded-full px-7">
+            <button className=" mt-1 flex items-center justify-center border rounded-full px-7">
               <div>Sign Up With Google</div>
               <div>
                 <img
@@ -67,6 +69,8 @@ function Signup() {
               </div>
             </button>
           </div>
+
+          <div className=" text-center mb-1 mt-1">Or</div>
 
           <div className="mb-4">
             <label className="block text-sm font-semibold text-gray-600 mb-1">
@@ -84,9 +88,9 @@ function Signup() {
               className="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
               placeholder="Enter your Name"
             />
-            {errors.Name && (
+            {errors.name && (
               <span className="text-red-600 text-sm">
-                {errors.Name.message}
+                {errors.name.message}
               </span>
             )}
           </div>
@@ -186,7 +190,7 @@ function Signup() {
                 required: "Repeat Password is required",
                 validate: (value) =>
                   value === password || "Password doesn't match",
-                minLength: {
+                minLength               : {
                   value: 4,
                   message: "Minimum length is 4 characters",
                 },
@@ -222,7 +226,7 @@ function Signup() {
           <div className="text-sm text-center mt-4">
             Already have an account ?
             <span className="underline font-bold cursor-pointer">
-              Login here
+              <Link to="/login"> Login here</Link>
             </span>
           </div>
         </form>
@@ -232,3 +236,4 @@ function Signup() {
 }
 
 export default Signup;
+
