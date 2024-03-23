@@ -4,10 +4,9 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import "./app.css";
-import bg from '../assets/bg.png'
+import bg from "../assets/bg.png";
 
 function Login() {
-
   const [userData, setUserData] = useState([]);
 
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ function Login() {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log(data)
+    console.log(data);
     const user = userData.find(
       (user) => user.email === data.Email && user.password === data.Password
     );
@@ -43,11 +42,13 @@ function Login() {
 
   return (
     <div
-      className="login w-screen h-screen flex justify-center items-center"
+      className="login w-screen h-screen"
       style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover" }}
     >
-      <div className=" absolute mt-48 text-white">TechyChats</div>
-      <div className="container mx-auto">
+      <div className="  text-white w-fit p-5 font-semibold text-lg tracking-widest">TECHY CHATS</div>
+
+      <div className="">
+      <div className=" items-center justify-center container mx-auto">
         <div className="text-center text-white text-4xl font-bold mb-8">
           LOGIN
         </div>
@@ -138,10 +139,11 @@ function Login() {
           <div className="text-sm text-center mt-4">
             Don't have an account?
             <span className="underline font-bold cursor-pointer">
-             <Link to='/signup'> Sign up here</Link>
+              <Link to="/signup"> Sign up here</Link>
             </span>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

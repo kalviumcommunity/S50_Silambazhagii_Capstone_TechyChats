@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import ParticleApp from '../utilities/particleGen';
+import './app.css'
 
 function About() {
   return (
-    <div>About</div>
-  )
+    <>
+      <div className='particle-container'>
+        <ParticleApp />
+        <div className='content text-white'>
+          About
+        </div>
+      </div>
+    </>
+  );
 }
 
-export default About
+export default About;

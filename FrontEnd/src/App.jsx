@@ -5,6 +5,8 @@ import {  Route, Routes } from 'react-router-dom';
 import MainPage from './Components/MainPage';
 import About from "./Components/About"
 import Login from './Components/Login';
+import Account from './Components/Account'
+
 function App() {
   return (
     <>
@@ -15,6 +17,7 @@ function App() {
       <Route path='/about' element = {<About/>}/>
       <Route path='/main' element={<MainPage />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/account' element={<Account />} />
     </Routes>
     </>
   )

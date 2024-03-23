@@ -9,7 +9,6 @@ import profile from "../assets/profile.jpeg";
 import claps from "../assets/claps.jpeg";
 import comments from "../assets/comments.png";
 import bookmark from "../assets/bookmark.jpeg";
-// import image from "../assets/image.jpeg";
 import addPost from "../assets/addPost.png";
 
 function MainPage() {
@@ -30,7 +29,9 @@ function MainPage() {
     <>
       <div className="mainbody">
         <nav className="flex justify-between text-center items-center ">
-          <div>TechyChats</div>
+          <div className="font-semibold text-3xl tracking-widest">
+            TECHY CHATS
+          </div>
           <div class="relative">
             <input
               class="bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
@@ -48,10 +49,10 @@ function MainPage() {
           </div>
           <div className="flex text-center items-center">
             <div className="">
-              <Link to='/login'>
-              <button className="mr-5 bg-gray-500 rounded px-8 text-white py-1.5">
-                Login
-              </button>
+              <Link to="/login">
+                <button className="mr-5 bg-gray-500 rounded px-8 text-white py-1.5">
+                  Login
+                </button>
               </Link>
               <Link to="/signup">
                 <button className="mr-10 bg-gray-500 rounded px-8 text-white py-1.5">
@@ -59,9 +60,11 @@ function MainPage() {
                 </button>
               </Link>
             </div>
-            <div className="account">
-              <img className=" rounded-full h-12 w-12" src={profile} alt="" />
-            </div>
+            <Link to="/account">
+              <div className="account">
+                <img className=" rounded-full h-12 w-12" src={profile} alt="" />
+              </div>
+            </Link>
           </div>
         </nav>
 
@@ -90,8 +93,8 @@ function MainPage() {
         <div className="mainbody flex justify-between">
           <div className="box w-3/4">
             <div className="flex mt-8 items-center">
-              <div className="flex content flex-wrap">
-                <div className="flex content flex-wrap">
+              <div className="flex flex-wrap">
+                <div className="flex flex-wrap">
                   <div className="box">
                     {posts.map((post) => (
                       <div className="flex mt-7 items-center" key={post.id}>
