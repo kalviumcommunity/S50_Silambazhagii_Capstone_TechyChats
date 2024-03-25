@@ -19,7 +19,7 @@ body{
     padding: 0 20px;
     justify-content: center;
     align-items: center;
-  }
+}
 .main{
     /* position: relative; */
     overflow: hidden;
@@ -55,3 +55,4 @@ body{
   align-items: center;
   font-size: 24px; 
 }
+
