@@ -20,7 +20,6 @@ function MainPage() {
   const [like, setLike] = useState(0);
   const [account, setAccount] = useState(false);
 
-
   const { userData } = useContext(UserContext);
 
   const UserName = Cookies.get("username");
@@ -32,13 +31,11 @@ function MainPage() {
   };
 
   useEffect(() => {
-
     if (userData) {
       setAccount(true);
     } else {
       setAccount(false);
     }
-
 
     console.log("User data:", userData);
     // console.log(userData.name);
@@ -93,12 +90,16 @@ function MainPage() {
               </Link>
             </div>
             {account && (
-            <Link to="/account">
-              <div className="account">
-                <img className=" rounded-full h-12 w-12" src={profile} alt="" />
-                <div>{userData.name}</div>
-              </div>
-            </Link>
+              <Link to="/account">
+                <div className="account">
+                  <img
+                    className=" rounded-full h-12 w-12"
+                    src={profile}
+                    alt=""
+                  />
+                  <div>{userData.name}</div>
+                </div>
+              </Link>
             )}
           </div>
         </nav>
