@@ -19,6 +19,7 @@ function MainPage() {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
   const [account, setAccount] = useState(false);
+  const [userName, setUserName] = useState("");
 
   const { userData } = useContext(UserContext);
 
