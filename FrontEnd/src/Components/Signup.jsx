@@ -1,10 +1,12 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./app.css";
 import bg from '../assets/bg.png'
+import Cookies from 'js-cookie';
+import { UserContext } from "./UserContext";
 
 
 function Signup() {
@@ -16,14 +18,22 @@ function Signup() {
     formState: { errors },
   } = useForm();
 
+  const { storeUserData } = useContext(UserContext);
+
   const onSubmit = async (data) => {
     try {
       console.log(data);
       const response = await axios.post("http://localhost:3000/users", data);
       console.log(response.data);
+      storeUserData(data);
       setSub(true);
       navigate("/main");
-    } catch (error) {
+      Cookies.set("username", data.name);
+      Cookies.set("useremail", data.email);
+      Cookies.set("userbio", data.bio);
+      console.log(data.name)
+    }
+     catch (error) {
       console.error("Error occurred while submitting:", error);
     }
   };
