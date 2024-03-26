@@ -6,7 +6,7 @@ import axios from "axios";
 import "./app.css";
 import bg from '../assets/bg.png'
 import Cookies from 'js-cookie';
-// import UserContext from "./UserContext";
+import { UserContext } from "./UserContext";
 
 
 function Signup() {
@@ -18,14 +18,14 @@ function Signup() {
     formState: { errors },
   } = useForm();
 
-  // const { setUserData } = useContext(UserContext);
+  const { storeUserData } = useContext(UserContext);
 
   const onSubmit = async (data) => {
     try {
       console.log(data);
       const response = await axios.post("http://localhost:3000/users", data);
       console.log(response.data);
-      // setUserData(data); 
+      storeUserData(data);
       setSub(true);
       navigate("/main");
       Cookies.set("username", data.name);

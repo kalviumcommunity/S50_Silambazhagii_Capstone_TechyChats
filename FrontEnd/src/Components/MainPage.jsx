@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Cookies from 'js-cookie'; 
-// import { UserProvider } from "./UserContext"; 
-// import UserContext from "./UserContext";
+import Cookies from "js-cookie";
 import "./app.css";
 import "./animation.css";
 import search from "../assets/search.png";
@@ -15,29 +13,42 @@ import comments from "../assets/comments.png";
 import addPost from "../assets/addPost.png";
 import orangelogo from "../assets/orangelogo.png";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
+import { UserContext } from "./UserContext";
 
 function MainPage() {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
-  // const userData  = useContext(UserContext);
+  const [account, setAccount] = useState(false);
+
+
+  const { userData } = useContext(UserContext);
 
   const UserName = Cookies.get("username");
   const UserEmail = Cookies.get("useremail");
   const UserBio = Cookies.get("userbio");
 
   const incrementLike = () => {
-    setLike(like+1);
+    setLike(like + 1);
   };
-  // setUserData(data);
-  
 
+  useEffect(() => {
+
+    if (userData) {
+      setAccount(true);
+    } else {
+      setAccount(false);
+    }
+
+
+    console.log("User data:", userData);
+    // console.log(userData.name);
+  }, [userData]);
 
   useEffect(() => {
     axios
       .get("http://localhost:3000/posts")
       .then((response) => {
         setPosts(response.data);
-        
       })
       .catch((error) => {
         console.log(error);
@@ -81,12 +92,14 @@ function MainPage() {
                 </button>
               </Link>
             </div>
+            {account && (
             <Link to="/account">
               <div className="account">
                 <img className=" rounded-full h-12 w-12" src={profile} alt="" />
                 <div>{userData.name}</div>
               </div>
             </Link>
+            )}
           </div>
         </nav>
 
@@ -143,7 +156,10 @@ function MainPage() {
                                     className="checkbox "
                                     id="Give-It-An-Id"
                                   />
-                                  <div className="svg-container" onClick={incrementLike}>
+                                  <div
+                                    className="svg-container"
+                                    onClick={incrementLike}
+                                  >
                                     <svg
                                       viewBox="0 0 24 24"
                                       className="svg-outline"
