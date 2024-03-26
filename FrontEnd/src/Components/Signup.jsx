@@ -4,10 +4,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./app.css";
-import bg from '../assets/bg.png'
-import Cookies from 'js-cookie';
+import bg from "../assets/bg.png";
+import Cookies from "js-cookie";
 import { UserContext } from "./UserContext";
-
 
 function Signup() {
   const navigate = useNavigate();
@@ -31,9 +30,8 @@ function Signup() {
       Cookies.set("username", data.name);
       Cookies.set("useremail", data.email);
       Cookies.set("userbio", data.bio);
-      console.log(data.name)
-    }
-     catch (error) {
+      console.log(data.name);
+    } catch (error) {
       console.error("Error occurred while submitting:", error);
     }
   };
@@ -46,7 +44,6 @@ function Signup() {
     <div
       className="signup w-screen h-screen flex justify-end overflow-y-hidden"
       style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover" }}
-
     >
       <div className="container h-screen mt-10">
         <div className="text-center text-white text-4xl font-bold ">
@@ -200,7 +197,7 @@ function Signup() {
                 required: "Repeat Password is required",
                 validate: (value) =>
                   value === password || "Password doesn't match",
-                minLength               : {
+                minLength: {
                   value: 4,
                   message: "Minimum length is 4 characters",
                 },
@@ -246,4 +243,3 @@ function Signup() {
 }
 
 export default Signup;
-
