@@ -6,11 +6,9 @@ import MainPage from "./Components/MainPage";
 import About from "./Components/About";
 import Login from "./Components/Login";
 import Account from "./Components/Account";
-import { UserProvider } from "./Components/UserContext";
 
 function App() {
   return (
-    <UserProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/landing" element={<LandingPage />} />
@@ -20,7 +18,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/account" element={<Account />} />
       </Routes>
-    </UserProvider>
   );
 }
 

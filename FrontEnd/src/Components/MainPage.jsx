@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -8,40 +8,34 @@ import search from "../assets/search.png";
 import backward from "../assets/backward.png";
 import forward from "../assets/forward.png";
 import profile from "../assets/profile.jpeg";
-import claps from "../assets/claps.jpeg";
 import comments from "../assets/comments.png";
 import addPost from "../assets/addPost.png";
 import orangelogo from "../assets/orangelogo.png";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
-import { UserContext } from "./UserContext";
 
 function MainPage() {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
   const [account, setAccount] = useState(false);
-  const [userName, setUserName] = useState("");
 
-  const { userData } = useContext(UserContext);
 
   const UserName = Cookies.get("username");
   const UserEmail = Cookies.get("useremail");
   const UserBio = Cookies.get("userbio");
+  console.log()
 
   const incrementLike = () => {
     setLike(like + 1);
   };
 
   useEffect(() => {
-    if (userData) {
+    if (UserName) {
       setAccount(true);
     } else {
       setAccount(false);
     }
 
-    console.log("User data:", userData);
-    // console.log(userData.name);
-  }, [userData]);
-
+})
   useEffect(() => {
     axios
       .get("http://localhost:3000/posts")
@@ -98,7 +92,7 @@ function MainPage() {
                     src={profile}
                     alt=""
                   />
-                  <div>{userData.name}</div>
+                  <div>{UserName}</div>
                 </div>
               </Link>
             )}
