@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import profile from "../assets/profile.jpeg";
+import { UserContext } from "./UserContext";
 
 function Account() {
   const [loaded, setLoaded] = useState(false);
@@ -14,16 +15,23 @@ function Account() {
   const [skills, setSkills] = useState("");
   const [dob, setDob] = useState(new Date());
   const [place, setPlace] = useState("");
+  const [editMode, setEditMode] = useState(false);
+
+  const { userData } = useContext(UserContext);
+
 
   useEffect(() => {
-    setName("John Doe");
-    setEmail("john@example.com");
-    setAbout("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    setSkills("React, JavaScript, HTML, CSS");
-    setDob(new Date("1990-01-01"));
-    setPlace("New York, USA");
-    setLoaded(true);
-  }, []);
+    if (userData) {
+      setName(userData.name);
+      setEmail(userData.email);
+      setAbout(userData.bio);
+      setSkills(userData.skills);
+      setSkills();
+      setDob(new Date());
+      setPlace();
+      setLoaded(true);
+    }
+}, [userData]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -32,6 +40,13 @@ function Account() {
     }, 17500);
     return () => clearTimeout(animationEndTimeout);
   }, []);
+
+  const handleSubmit = () => {
+    // Submit the form data to update the user information
+    // You can add your logic here to handle the submission
+    setEditMode(false); // Disable edit mode after submission
+  };
+
 
   return (
     <motion.div
@@ -80,9 +95,10 @@ function Account() {
               </label>
               <input
                 type="text"
+                placeholder="Enter your Name"
                 className="border rounded-md px-2 py-1 w-3/4"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                oChange={(e) => setName(e.target.value)}
               />
             </div>
             <div className="flex items-center mb-4 w-full">
@@ -91,6 +107,7 @@ function Account() {
               </label>
               <input
                 type="text"
+                placeholder="Add your Email"
                 className="border rounded-md px-2 py-1 w-3/4"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -101,6 +118,7 @@ function Account() {
                 About:
               </label>
               <textarea
+                placeholder="Add your About"
                 className="border rounded-md px-2 py-1 w-3/4"
                 rows="3"
                 value={about}
@@ -113,6 +131,7 @@ function Account() {
               </label>
               <input
                 type="text"
+                placeholder="Add your Skills"
                 className="border rounded -md px-2 py-1 w-3/4"
                 value={skills}
                 onChange={(e) => setSkills(e.target.value)}
@@ -124,6 +143,7 @@ function Account() {
               </label>
               <DatePicker
                 selected={dob}
+                placeholder="Add your DOB"
                 onChange={(date) => setDob(date)}
                 className="border rounded-md px-2 py-1 w-3/4"
               />
@@ -134,6 +154,7 @@ function Account() {
               </label>
               <input
                 type="text"
+                placeholder="Add your Place"
                 className="border rounded-md px-2 py-1 w-3/4"
                 value={place}
                 onChange={(e) => setPlace(e.target.value)}
@@ -153,8 +174,15 @@ function Account() {
             className="bg-black text-white px-4 py-2 rounded-lg"
             whileHover={{ scale: 1.05 }}
             onClick={() => {}}
-          >
-            <FontAwesomeIcon icon={faEdit} className="mr-2" /> Edit Profile
+          >{!editMode && (
+            <button
+              className="text-gray-400 underline absolute m-0 mt-[0%] ml-[17%]"
+              onClick={handleEdit}
+            >
+              <FontAwesomeIcon icon={faEdit} /> Edit
+              {/* <FontAwesomeIcon icon={faEdit} className="mr-2" /> Edit Profile */}
+            </button>
+          )}
           </motion.button>
         </div>
       </div>
