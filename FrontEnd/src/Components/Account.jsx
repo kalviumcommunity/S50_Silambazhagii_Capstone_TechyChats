@@ -1,37 +1,35 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import profile from "../assets/profile.jpeg";
-import { UserContext } from "./UserContext";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router";
+import axios from "axios";
 
 function Account() {
-  const [loaded, setLoaded] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [about, setAbout] = useState("");
+  const UserName = Cookies.get("username");
+  const UserEmail = Cookies.get("useremail");
+  const UserBio = Cookies.get("userbio");
+
+  const [editMode, setEditMode] = useState(false);
+  const [updatedUserName, setUpdatedUserName] = useState(UserName);
+  const [updatedUserEmail, setUpdatedUserEmail] = useState(UserEmail);
+  const [updatedUserBio, setUpdatedUserBio] = useState(UserBio);
+
   const [skills, setSkills] = useState("");
   const [dob, setDob] = useState(new Date());
   const [place, setPlace] = useState("");
-  const [editMode, setEditMode] = useState(false);
 
-  const { userData } = useContext(UserContext);
+  const navigate = useNavigate();
 
-
-  useEffect(() => {
-    if (userData) {
-      setName(userData.name);
-      setEmail(userData.email);
-      setAbout(userData.bio);
-      setSkills(userData.skills);
-      setSkills();
-      setDob(new Date());
-      setPlace();
-      setLoaded(true);
-    }
-}, [userData]);
+  axios.put("http://localhost:3000/users", {
+    name: updatedUserName,
+    email: updatedUserEmail,
+    bio: updatedUserBio,
+  });
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -41,12 +39,42 @@ function Account() {
     return () => clearTimeout(animationEndTimeout);
   }, []);
 
-  const handleSubmit = () => {
-    // Submit the form data to update the user information
-    // You can add your logic here to handle the submission
-    setEditMode(false); // Disable edit mode after submission
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
   };
 
+  const handleSubmit = () => {
+    Cookies.set("username", updatedUserName);
+    Cookies.set("useremail", updatedUserEmail);
+    Cookies.set("userbio", updatedUserBio);
+    Cookies.set("skills", skills);
+    Cookies.set("dob", dob.toISOString());
+    Cookies.set("place", place);
+
+    navigate("/main");
+    setEditMode(false);
+  };
+
+  const logout = () => {
+    Cookies.remove("username");
+    Cookies.remove("useremail");
+    Cookies.remove("userbio");
+    Cookies.remove("skills");
+    Cookies.remove("dob");
+    Cookies.remove("place");
+
+    navigate("/main");
+  };
+
+  useEffect(() => {
+    const savedSkills = Cookies.get("skills");
+    const savedDob = Cookies.get("dob");
+    const savedPlace = Cookies.get("place");
+
+    if (savedSkills) setSkills(savedSkills);
+    if (savedDob) setDob(new Date(savedDob));
+    if (savedPlace) setPlace(savedPlace);
+  }, []);
 
   return (
     <motion.div
@@ -72,7 +100,7 @@ function Account() {
         }}
       />
 
-      <div className="justify-items-center border rounded-lg w-4/5 bg-white shadow-md p-8 relative z-10 flex flex-col justify-center items-center">
+      <div className="justify-items-center overflow-hidden border rounded-lg w-4/5 bg-white shadow-md p-8 relative z-10 flex flex-col justify-center items-center">
         <nav className="shadow-lg mb-8 flex justify-center items-center bg-gray-800 text-white px-6 py-3 rounded-lg w-full">
           <div className="text-xl font-semibold">PROFILE</div>
         </nav>
@@ -93,97 +121,130 @@ function Account() {
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 Name:
               </label>
-              <input
-                type="text"
-                placeholder="Enter your Name"
-                className="border rounded-md px-2 py-1 w-3/4"
-                value={name}
-                oChange={(e) => setName(e.target.value)}
-              />
+              {editMode ? (
+                <input
+                  type="text"
+                  placeholder="Enter your Name"
+                  className="border rounded-md px-2 py-1 w-3/4"
+                  value={updatedUserName}
+                  onChange={(e) => setUpdatedUserName(e.target.value)}
+                />
+              ) : (
+                <div>{UserName}</div>
+              )}
             </div>
             <div className="flex items-center mb-4 w-full">
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 Email:
               </label>
-              <input
-                type="text"
-                placeholder="Add your Email"
-                className="border rounded-md px-2 py-1 w-3/4"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              {editMode ? (
+                <input
+                  type="text"
+                  placeholder="Add your Email"
+                  className="border rounded-md px-2 py-1 w-3/4"
+                  value={updatedUserEmail}
+                  onChange={(e) => setUpdatedUserEmail(e.target.value)}
+                />
+              ) : (
+                <div>{UserEmail}</div>
+              )}
             </div>
             <div className="flex items-center mb-4 w-full">
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 About:
               </label>
-              <textarea
-                placeholder="Add your About"
-                className="border rounded-md px-2 py-1 w-3/4"
-                rows="3"
-                value={about}
-                onChange={(e) => setAbout(e.target.value)}
-              />
+              {editMode ? (
+                <textarea
+                  placeholder="Add your About"
+                  className="border rounded-md px-2 py-1 w-3/4"
+                  rows="3"
+                  value={updatedUserBio}
+                  onChange={(e) => setUpdatedUserBio(e.target.value)}
+                />
+              ) : (
+                <div>{UserBio}</div>
+              )}
             </div>
             <div className="flex items-center mb-4 w-full">
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 Skills:
               </label>
-              <input
-                type="text"
-                placeholder="Add your Skills"
-                className="border rounded -md px-2 py-1 w-3/4"
-                value={skills}
-                onChange={(e) => setSkills(e.target.value)}
-              />
+              {editMode ? (
+                <input
+                  type="text"
+                  placeholder="Add your Skills"
+                  className="border rounded-md px-2 py-1 w-3/4"
+                  value={skills}
+                  onChange={(e) => setSkills(e.target.value)}
+                />
+              ) : (
+                <div>{skills}</div>
+              )}
             </div>
             <div className="flex items-center mb-4 w-full">
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 DOB:
               </label>
-              <DatePicker
-                selected={dob}
-                placeholder="Add your DOB"
-                onChange={(date) => setDob(date)}
-                className="border rounded-md px-2 py-1 w-3/4"
-              />
+              {editMode ? (
+                <DatePicker
+                  selected={dob}
+                  placeholder="Add your DOB"
+                  onChange={(date) => setDob(date)}
+                  className="border rounded-md px-2 py-1 w-3/4"
+                />
+              ) : (
+                <div>{dob.toLocaleDateString()}</div>
+              )}
             </div>
             <div className="flex items-center w-full">
               <label className="mr-2 text-gray-800 w-1/4 text-right">
                 Place:
               </label>
-              <input
-                type="text"
-                placeholder="Add your Place"
-                className="border rounded-md px-2 py-1 w-3/4"
-                value={place}
-                onChange={(e) => setPlace(e.target.value)}
-              />
+              {editMode ? (
+                <input
+                  type="text"
+                  placeholder="Add your Place"
+                  className="border rounded-md px-2 py-1 w-3/4"
+                  value={place}
+                  onChange={(e) => setPlace(e.target.value)}
+                />
+              ) : (
+                <div>{place}</div>
+              )}
             </div>
           </div>
+        </div>
+        {/* Submit button centered */}
+        <div className="flex justify-center w-full">
+          {editMode && (
+            <motion.button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              whileHover={{ scale: 1.05 }}
+              onClick={handleSubmit}
+            >
+              Submit
+            </motion.button>
+          )}
         </div>
         <div className="flex justify-between w-full">
           <motion.button
             className="bg-gray-800 text-white px-4 py-2 rounded-lg mr-4"
             whileHover={{ scale: 1.05 }}
-            onClick={() => {}}
+            onClick={logout}
           >
             Log Out
           </motion.button>
-          <motion.button
-            className="bg-black text-white px-4 py-2 rounded-lg"
-            whileHover={{ scale: 1.05 }}
-            onClick={() => {}}
-          >{!editMode && (
-            <button
-              className="text-gray-400 underline absolute m-0 mt-[0%] ml-[17%]"
-              onClick={handleEdit}
+          {!editMode && (
+            <motion.button
+              className="bg-black text-white px-4 py-2 rounded-lg"
+              whileHover={{ scale: 1.05 }}
+              onClick={toggleEditMode}
             >
-              <FontAwesomeIcon icon={faEdit} /> Edit
-              {/* <FontAwesomeIcon icon={faEdit} className="mr-2" /> Edit Profile */}
-            </button>
+              <button className="">
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </button>
+            </motion.button>
           )}
-          </motion.button>
         </div>
       </div>
     </motion.div>

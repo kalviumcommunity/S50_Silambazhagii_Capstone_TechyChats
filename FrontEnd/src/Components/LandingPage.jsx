@@ -1,13 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import "./app.css";
 import { Link } from "react-router-dom";
-import { UserContext } from "./UserContext.jsx";
 
 function LandingPage() {
-  const userData = useContext(UserContext);
-  useEffect(() => {
-    console.log("User data:", userData);
-  }, [userData]);
   return (
     <>
       <div className="body1 justify-center items-center text-center h-screen">
