@@ -37,17 +37,18 @@ function Addpost() {
             <img src={TECHYCHATS} width={220} alt="" />
           </div>
         </div>
+        <div className="flex h-100 items-center text-center w-1/4 justify-between">
+        <div className="px-8 py-1 bg-green-500 text-white cursor-pointer rounded-full mr-4">
+            Share
+          </div>
 
-        <div className="flex text-center items-center">
-          <Link to="/account">
-            <div className="account">
-              <img
-                className="rounded-full h-12 w-12"
-                src={profile}
-                alt=""
-              />
-            </div>
-          </Link>
+          <div className="flex text-center items-center">
+            <Link to="/account">
+              <div className="account">
+                <img className="rounded-full h-12 w-12" src={profile} alt="" />
+              </div>
+            </Link>
+          </div>
         </div>
       </nav>
       <div className=" mt-12 flex flex-col">
@@ -80,9 +81,12 @@ function Addpost() {
             />
           </div>
         </div>
-        
+
         {selectedImage && (
-          <button onClick={clearSelectedImage} className="shadow-2xl border px-5 py-1 w-40 rounded-full mt-4">
+          <button
+            onClick={clearSelectedImage}
+            className="shadow-2xl border px-5 py-1 w-40 rounded-full mt-4"
+          >
             Change Image
           </button>
         )}
