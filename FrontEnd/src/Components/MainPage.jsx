@@ -18,11 +18,10 @@ function MainPage() {
   const [like, setLike] = useState(0);
   const [account, setAccount] = useState(false);
 
-
   const UserName = Cookies.get("username");
   const UserEmail = Cookies.get("useremail");
   const UserBio = Cookies.get("userbio");
-  console.log()
+  console.log();
 
   const incrementLike = () => {
     setLike(like + 1);
@@ -34,8 +33,7 @@ function MainPage() {
     } else {
       setAccount(false);
     }
-
-})
+  });
   useEffect(() => {
     axios
       .get("http://localhost:3000/posts")
@@ -226,10 +224,12 @@ function MainPage() {
           </div>
 
           <div className="flex flex-col">
-            <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
-              <img src={addPost} alt="" width={30} />
-              <div className="ml-4">Add Post</div>
-            </div>
+            <Link to="/addpost">
+              <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
+                <img src={addPost} alt="" width={30} />
+                <div className="ml-4">Add Post</div>
+              </div>
+            </Link>
 
             <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
               <div className="font-bold text-lg">Top Picks</div>
