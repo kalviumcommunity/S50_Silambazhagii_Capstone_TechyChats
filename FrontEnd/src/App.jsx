@@ -6,6 +6,7 @@ import MainPage from "./Components/MainPage";
 import About from "./Components/About";
 import Login from "./Components/Login";
 import Account from "./Components/Account";
+import Addpost from "./Components/Addpost";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/addpost" element={<Addpost />} />
       </Routes>
   );
 }
