@@ -80,7 +80,7 @@ function MainPage() {
                 </button>
               </Link>
             </div>
-            {showHamburgerMenu && (
+            {/* {showHamburgerMenu && ( */}
               <div>
                 {account && (
                   <Link to="/account">
@@ -95,7 +95,7 @@ function MainPage() {
                   </Link>
                 )}
               </div>
-            )}
+            {/* )} */}
           </div>
         </nav>
         <div className="relative">
@@ -243,7 +243,7 @@ function MainPage() {
 
           {/* Hamburger Menu */}
 
-          <div className="border border-red-700 flex">
+          <div className="flex h-10">
               {showHamburgerMenu && (
                 // Menu content goes here
                 <div className="grid">
