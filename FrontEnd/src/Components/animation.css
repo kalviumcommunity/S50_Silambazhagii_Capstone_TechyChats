@@ -200,7 +200,7 @@
 
   .heart-container .checkbox:checked ~ .svg-container .svg-filled {
     display: block;
-    fill: red; /* Change heart color to red */
+    fill: red; 
   }
 
   .heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
@@ -238,3 +238,65 @@
       display: none;
     }
   }
+
+
+  #checkbox2 {
+    position: absolute;
+    display: none;
+}
+
+.toggle2 {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition-duration: .5s;
+}
+
+.bars {
+  width: 57%;
+  height: 4px;
+  background-color: rgb(78, 78, 78); 
+  border-radius: 6px;
+}
+
+#bar5 {
+  transition-duration: .8s;
+}
+
+#bar4,#bar6 {
+  width: 40%;
+}
+
+#checkbox2:checked + .toggle2 .bars {
+  position: absolute;
+  transition-duration: .5s;
+}
+
+#checkbox2:checked + .toggle2 #bar5 {
+  transform: scaleX(0);
+  transition-duration: .5s;
+}
+
+#checkbox2:checked + .toggle2 #bar4 {
+  width: 70%;
+  transform: rotate(45deg);
+  transition-duration: 0.5s; 
+}
+
+#checkbox2:checked + .toggle2 #bar6 {
+  width: 70%;
+  transform: rotate(-45deg);
+  transition-duration: 0.5s;
+}
+
+
+#checkbox2:checked + .toggle2 {
+  transition-duration: .5s;
+  transform: rotate(180deg);
+}

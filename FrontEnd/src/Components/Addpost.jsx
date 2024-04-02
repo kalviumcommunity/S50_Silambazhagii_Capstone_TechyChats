@@ -29,29 +29,29 @@ function Addpost() {
   };
 
   return (
-    <div className="ml-16 mt-7 mb-10 mr-16 overflow-y-scroll">
-      <nav className="flex m-90 justify-between text-center items-center ">
-        <div className="font-semibold flex text-3xl tracking-widest">
+    <div className="mx-auto px-16 mb-10">
+      <nav className="flex justify-between items-center">
+      <div><Link to="/main" className = "block shadow-lg px-4 py-1 rounded-full bg-red-100 mt-4 text-black-500">
+      ✖️ Go to Home 
+      </Link>
+        <div className="mt-7 font-semibold flex text-3xl tracking-widest">
           <img src={orangelogo} width={70} alt="" />
           <div className="absolute ml-5 mt-5">
             <img src={TECHYCHATS} width={220} alt="" />
           </div>
-        </div>
-        <div className="flex h-100 items-center text-center w-1/4 justify-between">
-        <div className="px-8 py-1 bg-green-500 text-white cursor-pointer rounded-full mr-4">
+        </div></div>
+        <div className="flex items-center">
+          <div className="px-4 py-1 bg-green-600 text-white cursor-pointer rounded-full mr-4">
             Share
           </div>
-
-          <div className="flex text-center items-center">
-            <Link to="/account">
-              <div className="account">
-                <img className="rounded-full h-12 w-12" src={profile} alt="" />
-              </div>
-            </Link>
-          </div>
+          <Link to="/account">
+            <div className="account">
+              <img className="rounded-full h-12 w-12" src={profile} alt="" />
+            </div>
+          </Link>
         </div>
       </nav>
-      <div className=" mt-12 flex flex-col">
+      <div className="w-xl mt-12 flex flex-col">
         <div>
           <input
             type="text"

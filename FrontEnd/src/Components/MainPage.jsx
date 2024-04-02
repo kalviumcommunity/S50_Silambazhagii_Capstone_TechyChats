@@ -5,8 +5,6 @@ import Cookies from "js-cookie";
 import "./app.css";
 import "./animation.css";
 import search from "../assets/search.png";
-import backward from "../assets/backward.png";
-import forward from "../assets/forward.png";
 import profile from "../assets/profile.jpeg";
 import comments from "../assets/comments.png";
 import addPost from "../assets/addPost.png";
@@ -17,12 +15,10 @@ function MainPage() {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
   const [account, setAccount] = useState(false);
+  const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
+  const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
 
   const UserName = Cookies.get("username");
-  const UserEmail = Cookies.get("useremail");
-  const UserBio = Cookies.get("userbio");
-  console.log();
-
   const incrementLike = () => {
     setLike(like + 1);
   };
@@ -33,7 +29,8 @@ function MainPage() {
     } else {
       setAccount(false);
     }
-  });
+  }, [UserName]);
+
   useEffect(() => {
     axios
       .get("http://localhost:3000/posts")
@@ -44,19 +41,20 @@ function MainPage() {
         console.log(error);
       });
   }, []);
+
   return (
     <>
       <div className="mainbody">
-        <nav className="flex justify-between text-center items-center ">
+        <nav className="flex justify-between text-center items-center">
           <div className="font-semibold flex text-3xl tracking-widest">
             <img src={orangelogo} width={70} alt="" />
             <div className="absolute ml-5 mt-5">
               <img src={TECHYCHATS} width={220} alt="" />
             </div>
           </div>
-          <div class="relative">
+          <div className="relative">
             <input
-              class="bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
+              className="bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
               type="text"
               name=""
               id=""
@@ -65,7 +63,7 @@ function MainPage() {
             <img
               src={search}
               alt=""
-              class="absolute right-3 top-1/2 transform -translate-y-1/2"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2"
               width={20}
             />
           </div>
@@ -77,48 +75,68 @@ function MainPage() {
                 </button>
               </Link>
               <Link to="/signup">
-                <button className="mr-10 bg-orange-400 rounded px-8 text-white font-semibold py-1.5">
+                <button className="bg-orange-400 rounded px-8 text-white font-semibold py-1.5">
                   Signup
                 </button>
               </Link>
             </div>
-            {account && (
-              <Link to="/account">
-                <div className="account">
-                  <img
-                    className=" rounded-full h-12 w-12"
-                    src={profile}
-                    alt=""
-                  />
-                  <div>{UserName}</div>
-                </div>
-              </Link>
+            {showHamburgerMenu && (
+              <div>
+                {account && (
+                  <Link to="/account">
+                    <div className="account">
+                      <img
+                        className="rounded-full h-12 w-12"
+                        src={profile}
+                        alt=""
+                      />
+                      <div>{UserName}</div>
+                    </div>
+                  </Link>
+                )}
+              </div>
             )}
           </div>
         </nav>
-
-        <div className=" nav-container shadow-md mt-5 w-full py-3  flex justify-evenly items-center">
-          <div className="cursor-pointer">
-            <img src={backward} alt="" width={35} />
+        <div className="relative">
+          <div
+            className="hover:text-gray-500 w-fit cursor-pointer "
+            onClick={() => setShowCategoriesDropdown(!showCategoriesDropdown)}
+          >
+            Categories
           </div>
-          <div className="hover:text-gray-500 cursor-pointer">AI</div>
-          <div className="hover:text-gray-500 cursor-pointer">Technology</div>
-          <div className="hover:text-gray-500 cursor-pointer">Blockchain</div>
-          <div className="hover:text-gray-500 cursor-pointer">Gadgets</div>
-          <div className="hover:text-gray-500 cursor-pointer">
-            Problem Solving
-          </div>
-          <div className="hover:text-gray-500 cursor-pointer">Phones</div>
-          <div className="hover:text-gray-500 cursor-pointer">Software</div>
-          <div className="hover:text-gray-500 cursor-pointer">Future Tech</div>
-          <div className="hover:text-gray-500 cursor-pointer">
-            Autonomous Vehicles
-          </div>
-          <div className="cursor-pointer">
-            <img src={forward} alt="" width={35} />
-          </div>
-        </div>
-
+          {showCategoriesDropdown && (
+            <div className="absolute  left-0 bg-white shadow-md rounded-md z-10 px-5 nav-container w-full py-3 flex justify-between items-center relative">
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                AI
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Technology
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Blockchain
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Gadgets
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Problem Solving
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Phones
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Software
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Future Tech
+              </div>
+              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+                Autonomous Vehicles
+              </div>
+            </div>
+          )}
+        </div>{" "}
         <div className="mainbody flex justify-between">
           <div className="box w-3/4">
             <div className="flex mt-8 items-center">
@@ -147,7 +165,7 @@ function MainPage() {
                                 <div className="heart-container" title="Like">
                                   <input
                                     type="checkbox"
-                                    className="checkbox "
+                                    className="checkbox"
                                     id="Give-It-An-Id"
                                   />
                                   <div
@@ -223,66 +241,86 @@ function MainPage() {
             </div>
           </div>
 
-          <div className="flex flex-col">
-            <Link to="/addpost">
-              <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
-                <img src={addPost} alt="" width={30} />
-                <div className="ml-4">Add Post</div>
-              </div>
-            </Link>
+          {/* Hamburger Menu */}
 
-            <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
-              <div className="font-bold text-lg">Top Picks</div>
+          <div className="border border-red-700 flex">
+              {showHamburgerMenu && (
+                // Menu content goes here
+                <div className="grid">
+                  <Link to="/addpost">
+                    <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
+                      <img src={addPost} alt="" width={30} />
+                      <div className="ml-4">Add Post</div>
+                    </div>
+                  </Link>
 
-              <div className=" shadow-xl items-center flex justify-center py-5 mt-5">
-                <img
-                  src={profile}
-                  width={35}
-                  className=" rounded-full"
-                  alt=""
-                />
-                <div className="ml-5">Musthafa</div>
-              </div>
+                  <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
+                    <div className="font-bold text-lg">Top Picks</div>
 
-              <div className=" shadow-xl items-center flex justify-center py-5 mt-5">
-                <img
-                  src={profile}
-                  width={35}
-                  className=" rounded-full"
-                  alt=""
-                />
-                <div className="ml-5">Jithumon</div>
-              </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Musthafa</div>
+                    </div>
 
-              <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
-                <img
-                  src={profile}
-                  width={35}
-                  className=" rounded-full"
-                  alt=""
-                />
-                <div className="ml-5">Shahabas</div>
-              </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Jithumon</div>
+                    </div>
 
-              <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
-                <img
-                  src={profile}
-                  width={35}
-                  className=" rounded-full"
-                  alt=""
-                />
-                <div className="ml-5">Shahillu</div>
-              </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Shahabas</div>
+                    </div>
 
-              <div className=" shadow-xl items-center flex justify-center py-5 mt-5 ">
-                <img
-                  src={profile}
-                  width={35}
-                  className=" rounded-full"
-                  alt=""
-                />
-                <div className="ml-5">Silambam</div>
-              </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Shahillu</div>
+                    </div>
+
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Silambam</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="hamburger-icon ">
+              <input
+                id="checkbox2"
+                type="checkbox"
+                checked={showHamburgerMenu}
+                onClick={() => setShowHamburgerMenu((prevState) => !prevState)}
+              />
+              <label className="toggle toggle2" htmlFor="checkbox2">
+                <div id="bar4" className="bars"></div>
+                <div id="bar5" className="bars"></div>
+                <div id="bar6" className="bars"></div>
+              </label>
             </div>
           </div>
         </div>
