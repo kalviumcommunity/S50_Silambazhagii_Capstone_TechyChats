@@ -100,7 +100,10 @@ function Account() {
         }}
       />
 
-      <div className="justify-items-center overflow-hidden border rounded-lg w-4/5 bg-white shadow-md p-8 relative z-10 flex flex-col justify-center items-center">
+      <div className="justify-items-center overflow-hidden border rounded-lg w-4/5 bg-white shadow-md p-8 relative z-10 flex flex-col ">
+          <div className="big">
+          ✖️ Go to Home 
+          </div>
         <nav className="shadow-lg mb-8 flex justify-center items-center bg-gray-800 text-white px-6 py-3 rounded-lg w-full">
           <div className="text-xl font-semibold">PROFILE</div>
         </nav>
