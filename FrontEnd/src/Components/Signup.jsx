@@ -23,7 +23,7 @@ function Signup() {
       console.log(response.data);
       setSub(true);
       navigate("/main");
-      const { data, token } = response.data;
+      const { Userdata, token } = response.data;
       Cookies.set("token", token, { expires: 1 });
       Cookies.set("username", data.name);
       Cookies.set("useremail", data.email);
