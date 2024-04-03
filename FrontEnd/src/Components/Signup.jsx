@@ -19,15 +19,15 @@ function Signup() {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       const response = await axios.post("http://localhost:3000/users", data);
       console.log(response.data);
       setSub(true);
       navigate("/main");
+      const { data, token } = response.data;
+      Cookies.set("token", token, { expires: 1 });
       Cookies.set("username", data.name);
       Cookies.set("useremail", data.email);
       Cookies.set("userbio", data.bio);
-      console.log(data.name);
     } catch (error) {
       console.error("Error occurred while submitting:", error);
     }

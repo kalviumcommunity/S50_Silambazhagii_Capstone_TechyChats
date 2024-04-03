@@ -96,6 +96,19 @@ function MainPage() {
                 )}
               </div>
             {/* )} */}
+            <div className="hamburger-icon ">
+              <input
+                id="checkbox2"
+                type="checkbox"
+                checked={showHamburgerMenu}
+                onClick={() => setShowHamburgerMenu((prevState) => !prevState)}
+              />
+              <label className="toggle toggle2" htmlFor="checkbox2">
+                <div id="bar4" className="bars"></div>
+                <div id="bar5" className="bars"></div>
+                <div id="bar6" className="bars"></div>
+              </label>
+            </div>
           </div>
         </nav>
         <div className="relative">
@@ -309,7 +322,7 @@ function MainPage() {
                   </div>
                 </div>
               )}
-              <div className="hamburger-icon ">
+              {/* <div className="hamburger-icon ">
               <input
                 id="checkbox2"
                 type="checkbox"
@@ -321,7 +334,7 @@ function MainPage() {
                 <div id="bar5" className="bars"></div>
                 <div id="bar6" className="bars"></div>
               </label>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -330,3 +343,5 @@ function MainPage() {
 }
 
 export default MainPage;
+
+
