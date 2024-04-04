@@ -14,6 +14,7 @@ import TECHYCHATS from "../assets/TECHYCHATS.png";
 function MainPage() {
   const [posts, setPosts] = useState([]);
   const [like, setLike] = useState(0);
+  const [load, setLoad] = useState(true);
   const [account, setAccount] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -35,12 +36,31 @@ function MainPage() {
     axios
       .get("http://localhost:3000/posts")
       .then((response) => {
-        setPosts(response.data);
+        const postsWithBase64Images = response.data.map((post) => {
+          const base64Image = post.image_url.toString("base64");
+          return {
+            ...post,
+            image_url: `data:image/png;base64,${base64Image}`,
+          };
+        });
+        console.log(postsWithBase64Images);
+
+        setPosts(postsWithBase64Images);
+        setLoad(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoad(false);
       });
   }, []);
+
+  const navButtonClass =
+    "mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5";
+  const searchInputClass =
+    "bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96";
+  const profileImageClass = "rounded-full h-12 w-12";
+  const addPostButtonClass =
+    "w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10";
 
   return (
     <>
@@ -75,27 +95,26 @@ function MainPage() {
                 </button>
               </Link>
               <Link to="/signup">
-                <button className="bg-orange-400 rounded px-8 text-white font-semibold py-1.5">
+                <button className="bg-orange-400 mr-10 rounded px-8 text-white font-semibold py-1.5">
                   Signup
                 </button>
               </Link>
             </div>
             {/* {showHamburgerMenu && ( */}
-              <div>
-                {account && (
-                  <Link to="/account">
-                    <div className="account">
-                      <img
-                        className="rounded-full h-12 w-12"
-                        src={profile}
-                        alt=""
-                      />
-                      <div>{UserName}</div>
-                    </div>
-                  </Link>
-                )}
-              </div>
-            {/* )} */}
+            <div>
+              {account && (
+                <Link to="/account">
+                  <div className="account">
+                    <img
+                      className="rounded-full h-12 w-12"
+                      src={profile}
+                      alt=""
+                    />
+                    <div>{UserName}</div>
+                  </div>
+                </Link>
+              )}
+            </div>
             <div className="hamburger-icon ">
               <input
                 id="checkbox2"
@@ -150,6 +169,34 @@ function MainPage() {
             </div>
           )}
         </div>{" "}
+        {load && (
+          <div className="boxes mt-[20%] ml-[50%]">
+            <div className="box">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div className="box">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div className="box">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <div className="box">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
         <div className="mainbody flex justify-between">
           <div className="box w-3/4">
             <div className="flex mt-8 items-center">
@@ -157,7 +204,7 @@ function MainPage() {
                 <div className="flex flex-wrap">
                   <div className="box">
                     {posts.map((post) => (
-                      <div className="flex mt-7 items-center" key={post.id}>
+                      <div className="flex mt-7 items-center" key={post._id}>
                         <div className="w-4/5 mainBox">
                           <div>
                             <h1 className="font-semibold text-2xl">
@@ -257,72 +304,72 @@ function MainPage() {
           {/* Hamburger Menu */}
 
           <div className="flex h-10">
-              {showHamburgerMenu && (
-                // Menu content goes here
-                <div className="grid">
-                  <Link to="/addpost">
-                    <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
-                      <img src={addPost} alt="" width={30} />
-                      <div className="ml-4">Add Post</div>
-                    </div>
-                  </Link>
+            {showHamburgerMenu && (
+              // Menu content goes here
+              <div className="grid">
+                <Link to="/addpost">
+                  <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
+                    <img src={addPost} alt="" width={30} />
+                    <div className="ml-4">Add Post</div>
+                  </div>
+                </Link>
 
-                  <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
-                    <div className="font-bold text-lg">Top Picks</div>
+                <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
+                  <div className="font-bold text-lg">Top Picks</div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
-                      <img
-                        src={profile}
-                        width={35}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div className="ml-5">Musthafa</div>
-                    </div>
+                  <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                    <img
+                      src={profile}
+                      width={35}
+                      className="rounded-full"
+                      alt=""
+                    />
+                    <div className="ml-5">Musthafa</div>
+                  </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
-                      <img
-                        src={profile}
-                        width={35}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div className="ml-5">Jithumon</div>
-                    </div>
+                  <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                    <img
+                      src={profile}
+                      width={35}
+                      className="rounded-full"
+                      alt=""
+                    />
+                    <div className="ml-5">Jithumon</div>
+                  </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                      <img
-                        src={profile}
-                        width={35}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div className="ml-5">Shahabas</div>
-                    </div>
+                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <img
+                      src={profile}
+                      width={35}
+                      className="rounded-full"
+                      alt=""
+                    />
+                    <div className="ml-5">Shahabas</div>
+                  </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                      <img
-                        src={profile}
-                        width={35}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div className="ml-5">Shahillu</div>
-                    </div>
+                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <img
+                      src={profile}
+                      width={35}
+                      className="rounded-full"
+                      alt=""
+                    />
+                    <div className="ml-5">Shahillu</div>
+                  </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                      <img
-                        src={profile}
-                        width={35}
-                        className="rounded-full"
-                        alt=""
-                      />
-                      <div className="ml-5">Silambam</div>
-                    </div>
+                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <img
+                      src={profile}
+                      width={35}
+                      className="rounded-full"
+                      alt=""
+                    />
+                    <div className="ml-5">Silambam</div>
                   </div>
                 </div>
-              )}
-              {/* <div className="hamburger-icon ">
+              </div>
+            )}
+            {/* <div className="hamburger-icon ">
               <input
                 id="checkbox2"
                 type="checkbox"
@@ -343,5 +390,3 @@ function MainPage() {
 }
 
 export default MainPage;
-
-

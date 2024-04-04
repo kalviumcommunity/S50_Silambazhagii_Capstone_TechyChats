@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./app.css";
+import "./animation.css";
 import bg from "../assets/bg.png";
 import Cookies from "js-cookie";
 

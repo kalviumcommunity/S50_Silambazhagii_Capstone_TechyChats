@@ -1,47 +1,67 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
-import add from "../assets/add.png";
 import orangelogo from "../assets/orangelogo.png";
-import { Link } from "react-router-dom";
 import profile from "../assets/profile.jpeg";
+import { Pane, FileUploader, FileCard } from "evergreen-ui";
 
 function Addpost() {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate()
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [story, setStory] = useState("");
 
-  const handleAddImageClick = () => {
-    document.getElementById("image").click();
+  const [files, setFiles] = useState([]);
+  const [fileRejections, setFileRejections] = useState([]);
+
+  const handleChange = (files) => setFiles([files[0]]);
+  const handleRejected = (fileRejections) => setFileRejections([fileRejections[0]]);
+  const handleRemove = () => {
+    setFiles([]);
+    setFileRejections([]);
   };
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    // formData.append("story", story);
+    // formData.append("category", category);
+    // formData.append("author", author);
 
-    reader.onload = () => {
-      setSelectedImage(reader.result);
-    };
+    if (files.length > 0) {
+      formData.append("image", files[0]);
+    }
 
-    reader.readAsDataURL(file);
-  };
-
-  const clearSelectedImage = () => {
-    setSelectedImage(null);
-    document.getElementById("image").value = null;
+    try {
+      await axios.post("http://localhost:3000/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigate('/main');
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
   };
 
   return (
     <div className="mx-auto px-16 mb-10">
       <nav className="flex justify-between items-center">
-      <div><Link to="/main" className = "block shadow-lg px-4 py-1 rounded-full bg-red-100 mt-4 text-black-500">
-      ✖️ Go to Home 
-      </Link>
-        <div className="mt-7 font-semibold flex text-3xl tracking-widest">
-          <img src={orangelogo} width={70} alt="" />
-          <div className="absolute ml-5 mt-5">
-            <img src={TECHYCHATS} width={220} alt="" />
+        <div>
+          <Link to="/main" className="block shadow-lg px-4 py-1 rounded-full bg-red-100 mt-4 text-black-500">
+            ✖️ Go to Home 
+          </Link>
+          <div className="mt-7 font-semibold flex text-3xl tracking-widest">
+            <img src={orangelogo} width={70} alt="" />
+            <div className="absolute ml-5 mt-5">
+              <img src={TECHYCHATS} width={220} alt="" />
+            </div>
           </div>
-        </div></div>
+        </div>
         <div className="flex items-center">
-          <div className="px-4 py-1 bg-green-600 text-white cursor-pointer rounded-full mr-4">
+          <div className="px-4 py-1 bg-green-600 text-white cursor-pointer rounded-full mr-4" onClick={() => handleSubmit()}>
             Share
           </div>
           <Link to="/account">
@@ -57,52 +77,53 @@ function Addpost() {
             type="text"
             placeholder="Title"
             className="text-3xl p-2 border border-gray-300 outline-none rounded-md w-full mb-3"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <input
             type="text"
             placeholder="Description"
             className="text-lg p-2 border border-gray-300 outline-none rounded-md w-full mb-3"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
-        </div>
-
-        <div className="relative mt-5">
           <textarea
-            placeholder="Unfold your Story ..."
-            className="p-2 border border-gray-300 rounded-md outline-none w-full h-32"
-          ></textarea>
-          <div className="">
-            <img
-              src={add}
-              onClick={handleAddImageClick}
-              className="absolute bottom-2 right-2 transform transition duration-300 ease-in-out hover:rotate-90 cursor-pointer"
-              width={70}
-              height={10}
-              alt="Add Image"
-            />
-          </div>
+          type="text"
+          placeholder="story"
+          className="text-lg p-2 border border-gray-300 outline-none rounded-md w-full mb-3"
+          value={story}
+          onChange={(e) => setStory(e.target.value)}
+        />
         </div>
 
-        {selectedImage && (
-          <button
-            onClick={clearSelectedImage}
-            className="shadow-2xl border px-5 py-1 w-40 rounded-full mt-4"
-          >
-            Change Image
-          </button>
-        )}
-        {selectedImage && (
-          <div className="mt-5">
-            <img src={selectedImage} alt="Selected" className="w-96 h-auto" />
-          </div>
-        )}
+        <Pane maxWidth={654}>
+          <FileUploader
+            label="Upload File"
+            description="You can upload 1 file. File can be up to 50 MB."
+            maxSizeInBytes={50 * 1024 ** 2}
+            maxFiles={1}
+            onChange={handleChange}
+            onRejected={handleRejected}
+            renderFile={(file) => {
+              const { name, size, type } = file;
+              const fileRejection = fileRejections.find((fileRejection) => fileRejection.file === file);
+              const { message } = fileRejection || {};
+              return (
+                <FileCard
+                  key={name}
+                  isInvalid={fileRejection != null}
+                  name={name}
+                  onRemove={handleRemove}
+                  sizeInBytes={size}
+                  type={type}
+                  validationMessage={message}
+                />
+              );
+            }}
+            values={files}
+          />
+        </Pane>
       </div>
-      <input
-        type="file"
-        id="image"
-        accept="image/*"
-        className="hidden bg-red-400"
-        onChange={handleImageUpload}
-      />
     </div>
   );
 }

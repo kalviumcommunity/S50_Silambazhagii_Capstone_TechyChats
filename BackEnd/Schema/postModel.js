@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
         type: Number,
     },
     image_url: {
-        type: String,
+        type: Buffer,
     },
     category: {
         type: String,
