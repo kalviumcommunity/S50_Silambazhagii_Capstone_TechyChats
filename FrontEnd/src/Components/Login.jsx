@@ -3,8 +3,11 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
+import Cookies from "js-cookie"; // Import the Cookies module
 import "./app.css";
 import bg from "../assets/bg.png";
+
+
 
 function Login() {
   const [userData, setUserData] = useState([]);
@@ -26,6 +29,24 @@ function Login() {
         console.log("Error while fetching the data of Users", err);
       });
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = Cookies.get("token");
+      if (token) {
+        try {
+          await axios.post(
+            "http://localhost:4000/users/tokenvalidate", { token });
+          navigate("/home");
+        } catch (error) {
+          console.error("Error in post request", error.response.data.error);
+        }
+      }
+    };
+  
+    fetchData();
+  }, [userData]); // Add userData as a dependency
+  
 
   const onSubmit = async (data) => {
     console.log(data);
