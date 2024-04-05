@@ -61,7 +61,7 @@ function MainPage() {
   const profileImageClass = "rounded-full h-12 w-12";
   const addPostButtonClass =
     "w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10";
-
+    
   return (
     <>
       <div className="mainbody">
