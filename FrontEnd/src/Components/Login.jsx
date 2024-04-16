@@ -7,8 +7,6 @@ import Cookies from "js-cookie"; // Import the Cookies module
 import "./app.css";
 import bg from "../assets/bg.png";
 
-
-
 function Login() {
   const [userData, setUserData] = useState([]);
 
