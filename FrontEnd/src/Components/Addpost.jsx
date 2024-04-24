@@ -26,14 +26,14 @@ function Addpost() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
-    // formData.append("story", story);
-    // formData.append("category", category);
-    // formData.append("author", author);
-
+    formData.append("story", story);
+    // formData.append("category", category); // If you have a category field
+    // formData.append("author", author); // If you have an author field
+  
     if (files.length > 0) {
       formData.append("image", files[0]);
     }
-
+  
     try {
       await axios.post("http://localhost:3000/posts", formData, {
         headers: {
@@ -45,6 +45,7 @@ function Addpost() {
       console.error("Error posting data:", error);
     }
   };
+  
 
   return (
     <div className="mx-auto px-16 mb-10">

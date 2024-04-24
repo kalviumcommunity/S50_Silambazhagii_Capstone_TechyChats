@@ -10,6 +10,7 @@ import comments from "../assets/comments.png";
 import addPost from "../assets/addPost.png";
 import orangelogo from "../assets/orangelogo.png";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
+import { useNavigate } from "react-router-dom";
 
 function MainPage() {
   const [posts, setPosts] = useState([]);
@@ -18,10 +19,11 @@ function MainPage() {
   const [account, setAccount] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
-
+  const navigate = useNavigate();
   const UserName = Cookies.get("username");
-  const incrementLike = () => {
-    setLike(like + 1);
+
+  const handlePostClick = (postId) => {
+    navigate(`/story/${postId}`);
   };
 
   useEffect(() => {
@@ -43,7 +45,7 @@ function MainPage() {
             image_url: `data:image/png;base64,${base64Image}`,
           };
         });
-        console.log(postsWithBase64Images);
+        // console.log(postsWithBase64Images);
 
         setPosts(postsWithBase64Images);
         setLoad(false);
@@ -138,7 +140,7 @@ function MainPage() {
             Categories
           </div>
           {showCategoriesDropdown && (
-            <div className="absolute  left-0 bg-white shadow-md rounded-md z-10 px-5 nav-container w-full py-3 flex justify-between items-center relative">
+            <div className="  left-0 bg-white shadow-md rounded-md z-10 px-5 nav-container w-full py-3 flex justify-between items-center relative">
               <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
                 AI
               </div>
@@ -204,7 +206,8 @@ function MainPage() {
                 <div className="flex flex-wrap">
                   <div className="box">
                     {posts.map((post) => (
-                      <div className="flex mt-7 items-center" key={post._id}>
+                      <div className="flex mt-7 border w-4/5 items-center cursor-pointer" onClick={() => handlePostClick(post._id)}
+                      key={post._id}>
                         <div className="w-4/5 mainBox">
                           <div>
                             <h1 className="font-semibold text-2xl">
@@ -230,7 +233,7 @@ function MainPage() {
                                   />
                                   <div
                                     className="svg-container"
-                                    onClick={incrementLike}
+                                    // onClick={incrementLike}
                                   >
                                     <svg
                                       viewBox="0 0 24 24"
@@ -369,19 +372,6 @@ function MainPage() {
                 </div>
               </div>
             )}
-            {/* <div className="hamburger-icon ">
-              <input
-                id="checkbox2"
-                type="checkbox"
-                checked={showHamburgerMenu}
-                onClick={() => setShowHamburgerMenu((prevState) => !prevState)}
-              />
-              <label className="toggle toggle2" htmlFor="checkbox2">
-                <div id="bar4" className="bars"></div>
-                <div id="bar5" className="bars"></div>
-                <div id="bar6" className="bars"></div>
-              </label>
-            </div> */}
           </div>
         </div>
       </div>

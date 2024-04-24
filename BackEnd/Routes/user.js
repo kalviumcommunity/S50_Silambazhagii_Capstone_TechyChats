@@ -41,10 +41,11 @@ router.post("/users/tokenvalidate", verifyToken, (req, res) => {
     res.status(200).json({ valid: true, user: req.decoded });
 });
 
-router.post("/", async (req, res) => {
+router.post("/createnew", async (req, res) => {
     try {
         // Validate request body against userSchema
         const validationResult = userSchema.validate(req.body);
+        console.log(validationResult)
         if (validationResult.error) {
             return res.status(400).json({ error: validationResult.error.details[0].message });
         }
