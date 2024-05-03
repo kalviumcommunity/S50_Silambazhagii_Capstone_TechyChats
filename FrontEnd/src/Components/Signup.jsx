@@ -19,8 +19,9 @@ function Signup() {
 
 
   const onSubmit = async (data) => {
+    console.log(data)
     try {
-      const response = await axios.post("http://localhost:3000/users", data);
+      const response = await axios.post("http://localhost:3000/users/createnew", data);
       console.log(response.data);
       setSub(true);
       navigate("/main");
