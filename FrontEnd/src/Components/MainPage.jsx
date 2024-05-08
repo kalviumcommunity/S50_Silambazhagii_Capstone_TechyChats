@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./app.css";
@@ -25,6 +25,9 @@ function MainPage() {
   const handlePostClick = (postId) => {
     navigate(`/story/${postId}`);
   };
+  const myPost = () => {
+    Navigate("/myposts");
+  };
 
   useEffect(() => {
     if (UserName) {
@@ -45,7 +48,7 @@ function MainPage() {
             image_url: `data:image/png;base64,${base64Image}`,
           };
         });
-        // console.log(postsWithBase64Images);
+        console.log(postsWithBase64Images);
 
         setPosts(postsWithBase64Images);
         setLoad(false);
@@ -56,14 +59,14 @@ function MainPage() {
       });
   }, []);
 
-  const navButtonClass =
-    "mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5";
-  const searchInputClass =
-    "bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96";
-  const profileImageClass = "rounded-full h-12 w-12";
-  const addPostButtonClass =
-    "w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10";
-    
+  // const navButtonClass =
+  //   "mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5";
+  // const searchInputClass =
+  //   "bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96";
+  // const profileImageClass = "rounded-full h-12 w-12";
+  // const addPostButtonClass =
+  //   "w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10";
+
   return (
     <>
       <div className="mainbody">
@@ -90,19 +93,21 @@ function MainPage() {
             />
           </div>
           <div className="flex text-center items-center">
-            <div className="">
-              <Link to="/login">
-                <button className="mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5">
-                  Login
-                </button>
-              </Link>
-              <Link to="/signup">
-                <button className="bg-orange-400 mr-10 rounded px-8 text-white font-semibold py-1.5">
-                  Signup
-                </button>
-              </Link>
-            </div>
-            {/* {showHamburgerMenu && ( */}
+            {!account && (
+              <div className="">
+                <Link to="/login">
+                  <button className="mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5">
+                    Login
+                  </button>
+                </Link>
+                <Link to="/signup">
+                  <button className="bg-orange-400 mr-10 rounded px-8 text-white font-semibold py-1.5">
+                    Signup
+                  </button>
+                </Link>
+              </div>
+            )}
+            {setLoad && (
             <div>
               {account && (
                 <Link to="/account">
@@ -116,7 +121,7 @@ function MainPage() {
                   </div>
                 </Link>
               )}
-            </div>
+            </div>)}
             <div className="hamburger-icon ">
               <input
                 id="checkbox2"
@@ -131,6 +136,7 @@ function MainPage() {
               </label>
             </div>
           </div>
+          
         </nav>
         <div className="relative">
           <div
@@ -206,8 +212,11 @@ function MainPage() {
                 <div className="flex flex-wrap">
                   <div className="box">
                     {posts.map((post) => (
-                      <div className="flex mt-7 border w-4/5 items-center cursor-pointer" onClick={() => handlePostClick(post._id)}
-                      key={post._id}>
+                      <div
+                        className="flex mt-7 border w-4/5 items-center cursor-pointer"
+                        onClick={() => handlePostClick(post._id)}
+                        key={post._id}
+                      >
                         <div className="w-4/5 mainBox">
                           <div>
                             <h1 className="font-semibold text-2xl">
@@ -306,73 +315,145 @@ function MainPage() {
 
           {/* Hamburger Menu */}
 
-          <div className="flex h-10">
-            {showHamburgerMenu && (
-              // Menu content goes here
-              <div className="grid">
-                <Link to="/addpost">
-                  <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10">
-                    <img src={addPost} alt="" width={30} />
-                    <div className="ml-4">Add Post</div>
-                  </div>
-                </Link>
+          {!load && (
+            <div className="flex border h-fit">
+              {!showHamburgerMenu && (
+                <div className="grid items-center">
+                  <Link to="/addpost">
+                    <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex  py-5 px-10">
+                      <img src={addPost} alt="" width={30} />
+                      <div className="ml-4">Add Post</div>
+                    </div>
+                  </Link>
 
-                <div className="w-80 mt-10 ml-20 border p-10 items-center justify-center text-center">
-                  <div className="font-bold text-lg">Top Picks</div>
+                  {/* {!showHamburgerMenu && ( */}
+                  <div className="w-80 mt-10 ml-20 p-10 items-center justify-center text-center">
+                    <div className="font-bold text-lg">Top Picks</div>
 
-                  <div className="shadow-xl items-center flex justify-center py-5 mt-5">
-                    <img
-                      src={profile}
-                      width={35}
-                      className="rounded-full"
-                      alt=""
-                    />
-                    <div className="ml-5">Musthafa</div>
-                  </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Musthafa</div>
+                    </div>
 
-                  <div className="shadow-xl items-center flex justify-center py-5 mt-5">
-                    <img
-                      src={profile}
-                      width={35}
-                      className="rounded-full"
-                      alt=""
-                    />
-                    <div className="ml-5">Jithumon</div>
-                  </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Jithumon</div>
+                    </div>
 
-                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                    <img
-                      src={profile}
-                      width={35}
-                      className="rounded-full"
-                      alt=""
-                    />
-                    <div className="ml-5">Shahabas</div>
-                  </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Shahabas</div>
+                    </div>
 
-                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                    <img
-                      src={profile}
-                      width={35}
-                      className="rounded-full"
-                      alt=""
-                    />
-                    <div className="ml-5">Shahillu</div>
-                  </div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Shahillu</div>
+                    </div>
 
-                  <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
-                    <img
-                      src={profile}
-                      width={35}
-                      className="rounded-full"
-                      alt=""
-                    />
-                    <div className="ml-5">Silambam</div>
+                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                      <img
+                        src={profile}
+                        width={35}
+                        className="rounded-full"
+                        alt=""
+                      />
+                      <div className="ml-5">Silambam</div>
+                    </div>
                   </div>
                 </div>
+              )}
+            </div>
+          )}
+
+          {showHamburgerMenu && (
+            <div className=" border mt-7 h-96 w-96">
+              <div className="w-full grid justify-center mt-10 h-fit">
+              <button
+                  className="cssbuttons-io-button text-center py-5 mt-7"
+                  onClick={myPost}
+                >
+                  Account
+                  <div className="icon">
+                    <svg
+                      height="24"
+                      width="24"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                      <path
+                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                        fill="currentColor"
+                      ></path>
+                    </svg>
+                  </div>
+                </button>
+                <button
+                  className="cssbuttons-io-button text-center py-5 mt-7"
+                  onClick={myPost}
+                >
+                  My Posts
+                  <div className="icon">
+                    <svg
+                      height="24"
+                      width="24"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                      <path
+                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                        fill="currentColor"
+                      ></path>
+                    </svg>
+                  </div>
+                </button>
+                {/* <div className="border mt-7 border-orange-400 shadow-2xl text-center py-3 px-5">
+                  About Techychats
+                </div> */}
+                <button
+                  className="cssbuttons-io-button text-center py-5 mt-7"
+                  onClick={myPost}
+                >
+                  About TechyChats
+                  <div className="icon">
+                    <svg
+                      height="24"
+                      width="24"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                      <path
+                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                        fill="currentColor"
+                      ></path>
+                    </svg>
+                  </div>
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </>

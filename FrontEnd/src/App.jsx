@@ -7,7 +7,8 @@ import About from "./Components/About";
 import Login from "./Components/Login";
 import Account from "./Components/Account";
 import Addpost from "./Components/Addpost";
-import StoryPage from "./Components/StoryPage"; 
+import StoryPage from "./Components/StoryPage";
+import myPosts from "./Components/myPosts";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/main" element={<MainPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/account" element={<Account />} />
+      <Route path="/myposts" element={<myPosts />} />
       <Route path="/addpost" element={<Addpost />} />
       <Route path="/story/:id" element={<StoryPage />} />
     </Routes>

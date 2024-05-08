@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
   },
   repeat_password: {
     type: String,
-    required: true
   },
 });
 
