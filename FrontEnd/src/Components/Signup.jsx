@@ -17,11 +17,21 @@ function Signup() {
     formState: { errors },
   } = useForm();
 
+  const [googleClicked, setGoogleClicked] = useState(false); 
+
+  const handleGoogleClick = () => {
+    setGoogleClicked(true); // Set state to true when Google sign-up is clicked
+    // console.log(data)
+    window.location.href = "http://localhost:3000/auth/google";
+  }
 
   const onSubmit = async (data) => {
-    console.log(data)
+    console.log(data);
     try {
-      const response = await axios.post("http://localhost:3000/users/createnew", data);
+      const response = await axios.post(
+        "http://localhost:3000/users/createnew",
+        data
+      );
       console.log(response.data);
       setSub(true);
       navigate("/main");
@@ -63,7 +73,11 @@ function Signup() {
             </>
           )}
 
-          <div className="mb-4 flex justify-center">
+<div
+            className="auth mb-4 flex justify-center"
+            onClick={handleGoogleClick}
+          >
+            {/* Render Google sign-up button */}
             <button className=" mt-1 flex items-center justify-center border rounded-full px-7">
               <div>Sign Up With Google</div>
               <div>

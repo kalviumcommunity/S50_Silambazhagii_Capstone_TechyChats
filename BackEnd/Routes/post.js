@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+
 // Define a route to get a single post by ID
 router.get('/getone/:id', async (req, res) => {
     try {
@@ -81,7 +82,7 @@ router.post("/", upload.single("image"), async (req, res) => {
             story : story,
             image_url: imageBuffer,
             category : "",
-            author : "" 
+            author : author
         });
 
         // Save the post document to the database

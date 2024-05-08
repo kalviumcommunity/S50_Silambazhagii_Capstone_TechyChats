@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const userModel = require('../Schema/userModel');
+const x = require('../Schema/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
@@ -17,6 +17,7 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ error: "Unauthorized: Token is not provided" });
     }
 
+    
     try {
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         req.decoded = decoded;

@@ -34,7 +34,7 @@ function Login() {
       if (token) {
         try {
           await axios.post(
-            "http://localhost:4000/users/tokenvalidate", { token });
+            "http://localhost:3000/users/tokenvalidate", { token });
           navigate("/home");
         } catch (error) {
           console.error("Error in post request", error.response.data.error);
