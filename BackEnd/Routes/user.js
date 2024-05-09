@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const x = require('../Schema/userModel');
+const userModel = require('../Schema/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
