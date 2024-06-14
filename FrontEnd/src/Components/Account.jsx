@@ -14,7 +14,7 @@ function Account() {
   const UserName = Cookies.get("username");
   const UserEmail = Cookies.get("useremail");
   const UserBio = Cookies.get("userbio");
-  
+
   const [posts, setPosts] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [updatedUserName, setUpdatedUserName] = useState(UserName);
@@ -275,12 +275,12 @@ function Account() {
             )}
           </div>
 
-
-          <div>
-            <div>
-              <div>My posts</div>
-            </div>
-
+          <div className="flex justify-center mt-8">
+            <Link to="/myposts">
+              <button class="btn-96 h-10 shadow-xl">
+                <span>View my Posts</span>
+              </button>
+            </Link>
           </div>
         </div>
       </motion.div>
