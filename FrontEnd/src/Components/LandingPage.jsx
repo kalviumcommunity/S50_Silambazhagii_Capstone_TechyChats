@@ -9,7 +9,7 @@ import bgvideo from "../assets/bgvid.mp4";
 function LandingPage() {
   return (
     <>
-      <video autoPlay muted loop src={bgvideo} id="myVideo" className="-z-20 hue-rotate-45">
+      <video autoPlay muted loop src={bgvideo} id="myVideo" className="-z-20 bg-contain hue-rotate-45">
       </video>
         <div className="body1 justify-center items-center text-center h-screen">
           <nav className=" flex justify-between text-white text-center font-semibold text-lg px-7">

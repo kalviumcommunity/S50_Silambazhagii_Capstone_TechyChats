@@ -25,8 +25,9 @@ function MainPage() {
   const handlePostClick = (postId) => {
     navigate(`/story/${postId}`);
   };
+
   const myPost = () => {
-    Navigate("/myposts");
+    navigate("/mypost");
   };
 
   useEffect(() => {
@@ -58,14 +59,6 @@ function MainPage() {
         setLoad(false);
       });
   }, []);
-
-  // const navButtonClass =
-  //   "mr-5 bg-orange-400 rounded px-8 text-white font-semibold py-1.5";
-  // const searchInputClass =
-  //   "bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96";
-  // const profileImageClass = "rounded-full h-12 w-12";
-  // const addPostButtonClass =
-  //   "w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex border py-5 px-10";
 
   return (
     <>
@@ -108,20 +101,21 @@ function MainPage() {
               </div>
             )}
             {setLoad && (
-            <div>
-              {account && (
-                <Link to="/account">
-                  <div className="account">
-                    <img
-                      className="rounded-full h-12 w-12"
-                      src={profile}
-                      alt=""
-                    />
-                    <div>{UserName}</div>
-                  </div>
-                </Link>
-              )}
-            </div>)}
+              <div>
+                {account && (
+                  <Link to="/account">
+                    <div className="account">
+                      <img
+                        className="rounded-full h-12 w-12"
+                        src={profile}
+                        alt=""
+                      />
+                      <div>{UserName}</div>
+                    </div>
+                  </Link>
+                )}
+              </div>
+            )}
             <div className="hamburger-icon ">
               <input
                 id="checkbox2"
@@ -136,7 +130,6 @@ function MainPage() {
               </label>
             </div>
           </div>
-          
         </nav>
         <div className="relative">
           <div
@@ -213,16 +206,24 @@ function MainPage() {
                   <div className="box">
                     {posts.map((post) => (
                       <div
-                        className="flex mt-7 border w-4/5 items-center cursor-pointer"
-                        onClick={() => handlePostClick(post._id)}
+                        className="flex p-4  mt-7 border w-5/5 items-center cursor-pointer"
                         key={post._id}
+                        // onClick={() => handlePostClick(post._id)}
                       >
                         <div className="w-4/5 mainBox">
                           <div>
-                            <h1 className="font-semibold text-2xl">
+                            <h1
+                              className="font-semibold text-2xl"
+                              onClick={() => handlePostClick(post._id)}
+                            >
                               {post.title}
                             </h1>
-                            <p className="font-semibold">{post.description}</p>
+                            <p
+                              className="font-semibold"
+                              onClick={() => handlePostClick(post._id)}
+                            >
+                              {post.description}
+                            </p>
                             <div className="flex justify-between">
                               <div className="flex items-center mt-4">
                                 <img
@@ -300,6 +301,7 @@ function MainPage() {
                         <div className="ml-10">
                           <img
                             src={post.image_url}
+                            onClick={() => handlePostClick(post._id)}
                             alt=""
                             width={200}
                             height={50}
@@ -384,74 +386,75 @@ function MainPage() {
               )}
             </div>
           )}
+          {!load && (
+            <div>
+              {showHamburgerMenu && (
+                <div className=" border mt-7 h-96 w-96">
+                  <div className="w-full grid justify-center mt-10 h-fit">
+                    <Link to="/account">
+                      <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
+                        Account
+                        <div className="icon">
+                          <svg
+                            height="24"
+                            width="24"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                              d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                              fill="currentColor"
+                            ></path>
+                          </svg>
+                        </div>
+                      </button>
+                    </Link>
 
-          {showHamburgerMenu && (
-            <div className=" border mt-7 h-96 w-96">
-              <div className="w-full grid justify-center mt-10 h-fit">
-              <button
-                  className="cssbuttons-io-button text-center py-5 mt-7"
-                  onClick={myPost}
-                >
-                  Account
-                  <div className="icon">
-                    <svg
-                      height="24"
-                      width="24"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 0h24v24H0z" fill="none"></path>
-                      <path
-                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
+
+                    <Link to="/myposts">
+                      <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
+                        My Posts
+                        <div className="icon">
+                          <svg
+                            height="24"
+                            width="24"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                              d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                              fill="currentColor"
+                            ></path>
+                          </svg>
+                        </div>
+                      </button>
+                    </Link>
+
+                    <Link to="/account">
+                      <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
+                        About TechyChats
+                        <div className="icon">
+                          <svg
+                            height="24"
+                            width="24"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                              d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                              fill="currentColor"
+                            ></path>
+                          </svg>
+                        </div>
+                      </button>
+                    </Link>
+
                   </div>
-                </button>
-                <button
-                  className="cssbuttons-io-button text-center py-5 mt-7"
-                  onClick={myPost}
-                >
-                  My Posts
-                  <div className="icon">
-                    <svg
-                      height="24"
-                      width="24"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 0h24v24H0z" fill="none"></path>
-                      <path
-                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                  </div>
-                </button>
-                {/* <div className="border mt-7 border-orange-400 shadow-2xl text-center py-3 px-5">
-                  About Techychats
-                </div> */}
-                <button
-                  className="cssbuttons-io-button text-center py-5 mt-7"
-                  onClick={myPost}
-                >
-                  About TechyChats
-                  <div className="icon">
-                    <svg
-                      height="24"
-                      width="24"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 0h24v24H0z" fill="none"></path>
-                      <path
-                        d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                  </div>
-                </button>
-              </div>
+                </div>
+              )}
             </div>
           )}
         </div>

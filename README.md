@@ -49,8 +49,8 @@
 # Connect With Us
 ## Stay connected with TechyChats on social media for the latest updates, exclusive content, and more:
 - Facebook: 
-- Instagram: 
-- Linkedin: 
-- GitHub: 
+- Instagram: https://www.instagram.com/techychats/
+- Linkedin: https://www.linkedin.com/in/kopperun-silambazhagii-ma-4aa196287/
+- GitHub: https://github.com/Silambazhagii
 
 ## Thank you for visiting TechyChats! We hope you enjoy exploring our content and joining us on our tech-filled journey.# S50_Silambazhagii_Capstone_TechyChats
