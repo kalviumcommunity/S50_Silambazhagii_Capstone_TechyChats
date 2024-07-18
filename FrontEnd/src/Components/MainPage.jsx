@@ -42,16 +42,7 @@ function MainPage() {
     axios
       .get("http://localhost:3000/posts")
       .then((response) => {
-        const postsWithBase64Images = response.data.map((post) => {
-          const base64Image = post.image_url.toString("base64");
-          return {
-            ...post,
-            image_url: `data:image/png;base64,${base64Image}`,
-          };
-        });
-        console.log(postsWithBase64Images);
-
-        setPosts(postsWithBase64Images);
+        setPosts(response.data);
         setLoad(false);
       })
       .catch((error) => {
@@ -100,6 +91,16 @@ function MainPage() {
                 </Link>
               </div>
             )}
+            {account && (
+              <div className="">
+                 <Link to="/addpost">
+                <div className="mr-32 ml-20 mt-7 text-center justify-center hover:bg-gray-200 cursor-pointer flex px-3 shadow-md py-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                  <img src={addPost} alt="" width={30} />
+                  <div className="ml-3 text-lg font-serif text-gray-800 tracking-wide">Share Your Story</div>
+                </div>
+              </Link>
+              </div>
+            )}
             {setLoad && (
               <div>
                 {account && (
@@ -116,6 +117,7 @@ function MainPage() {
                 )}
               </div>
             )}
+
             <div className="hamburger-icon ">
               <input
                 id="checkbox2"
@@ -321,13 +323,6 @@ function MainPage() {
             <div className="flex border h-fit">
               {!showHamburgerMenu && (
                 <div className="grid items-center">
-                  <Link to="/addpost">
-                    <div className="w-80 ml-20 mt-7 shadow-2xl text-center justify-center bg-gray-200 hover:bg-gray-300 cursor-pointer flex  py-5 px-10">
-                      <img src={addPost} alt="" width={30} />
-                      <div className="ml-4">Add Post</div>
-                    </div>
-                  </Link>
-
                   {/* {!showHamburgerMenu && ( */}
                   <div className="w-80 mt-10 ml-20 p-10 items-center justify-center text-center">
                     <div className="font-bold text-lg">Top Picks</div>
@@ -411,7 +406,6 @@ function MainPage() {
                       </button>
                     </Link>
 
-
                     <Link to="/myposts">
                       <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
                         My Posts
@@ -451,7 +445,6 @@ function MainPage() {
                         </div>
                       </button>
                     </Link>
-
                   </div>
                 </div>
               )}

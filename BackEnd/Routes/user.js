@@ -18,15 +18,16 @@ const verifyToken = (req, res, next) => {
     }
     
     try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.decoded = decoded;
         next();
     } catch (error) {
-        console.log(error)
-        return res.status(403).json({ error1: "Forbidden: Failed to authenticate token", error });
+        console.log(error);
+        return res.status(403).json({ error: "Forbidden: Failed to authenticate token", error });
     }
 };
 
+// Read all users
 router.get("/", async (req, res) => {
     try {
         const data = await userModel.find();
@@ -37,15 +38,30 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Read a single user by ID
+router.get("/:id", async (req, res) => {
+    try {
+        const user = await userModel.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occurred");
+    }
+});
+
+// Validate token
 router.post("/users/tokenvalidate", verifyToken, (req, res) => {
     res.status(200).json({ valid: true, user: req.decoded });
 });
 
+// Create a new user
 router.post("/createnew", async (req, res) => {
     try {
         // Validate request body against userSchema
         const validationResult = userSchema.validate(req.body);
-        console.log(validationResult)
         if (validationResult.error) {
             return res.status(400).json({ error: validationResult.error.details[0].message });
         }
@@ -61,6 +77,71 @@ router.post("/createnew", async (req, res) => {
         const token = generateToken(data);
 
         res.status(201).json({ userData: data, token: token });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occurred");
+    }
+});
+
+// Update a user by ID
+router.put("/:id", verifyToken, async (req, res) => {
+    try {
+        // Validate request body against userSchema
+        const validationResult = userSchema.validate(req.body);
+        if (validationResult.error) {
+            return res.status(400).json({ error: validationResult.error.details[0].message });
+        }
+
+        if (req.body.password) {
+            req.body.password = await bcrypt.hash(req.body.password, 10);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occurred");
+    }
+});
+
+
+router.patch("/:id", verifyToken, async (req, res) => {
+    try {
+        // Validate request body against userSchema
+        const validationResult = userSchema.validate(req.body);
+        if (validationResult.error) {
+            return res.status(400).json({ error: validationResult.error.details[0].message });
+        }
+
+        if (req.body.password) {
+            req.body.password = await bcrypt.hash(req.body.password, 10);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occurred");
+    }
+});
+
+
+// Delete a user by ID
+router.delete("/:id", verifyToken, async (req, res) => {
+    try {
+        const deletedUser = await userModel.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json({ message: "User deleted successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred");

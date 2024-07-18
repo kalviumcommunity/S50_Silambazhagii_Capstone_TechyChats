@@ -50,6 +50,7 @@ app.use("/users", userRouter);
 app.use("/posts", postRouter);
 
 
+
 app.get('/logout', (req, res) => {
   req.logout(err => {
     if (err) {

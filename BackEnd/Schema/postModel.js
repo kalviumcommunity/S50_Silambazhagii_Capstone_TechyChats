@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
         type: Number,
     },
     image_url: {
-        type: Buffer,
+        type: String,
     },
     category: {
         type: String,
@@ -26,4 +26,3 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;
-

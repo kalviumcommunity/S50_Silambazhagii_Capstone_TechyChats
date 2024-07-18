@@ -5,13 +5,15 @@ import TECHYCHATS from "../assets/TECHYCHATS.png";
 import orangelogo from "../assets/orangelogo.png";
 import profile from "../assets/profile.jpeg";
 import { Pane, FileUploader, FileCard } from "evergreen-ui";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { imgDB } from "./Firebase/firebaseconfig";
+import { v4 as uuidv4 } from "uuid";
 
 function Addpost() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [story, setStory] = useState("");
-
   const [files, setFiles] = useState([]);
   const [fileRejections, setFileRejections] = useState([]);
 
@@ -27,14 +29,17 @@ function Addpost() {
     formData.append("title", title);
     formData.append("description", description);
     formData.append("story", story);
-    // formData.append("category", category); // If you have a category field
-    // formData.append("author", author); // If you have an author field
-  
-    if (files.length > 0) {
-      formData.append("image", files[0]);
-    }
-  
+
     try {
+      // Upload image to Firebase Storage
+      if (files.length > 0) {
+        const storageRef = ref(imgDB, `Imgs/${uuidv4()}`);
+        const uploadTask = await uploadBytes(storageRef, files[0]);
+        const imageUrl = await getDownloadURL(uploadTask.ref);
+        formData.append("image", imageUrl);
+      }
+
+      // Send form data to the backend
       await axios.post("http://localhost:3000/posts", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -45,8 +50,6 @@ function Addpost() {
       console.error("Error posting data:", error);
     }
   };
-  
-
   return (
     <div className="mx-auto px-16 mb-10">
       <nav className="flex justify-between items-center">
@@ -89,12 +92,12 @@ function Addpost() {
             onChange={(e) => setDescription(e.target.value)}
           />
           <textarea
-          type="text"
-          placeholder="story"
-          className="text-lg p-2 border border-gray-300 outline-none rounded-md w-full mb-3"
-          value={story}
-          onChange={(e) => setStory(e.target.value)}
-        />
+            type="text"
+            placeholder="Story"
+            className="text-lg p-2 border border-gray-300 outline-none rounded-md w-full mb-3"
+            value={story}
+            onChange={(e) => setStory(e.target.value)}
+          />
         </div>
 
         <Pane maxWidth={654}>

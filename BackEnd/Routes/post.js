@@ -3,21 +3,22 @@ const router = express.Router();
 const postModel = require('../Schema/postModel');
 const multer = require("multer");
 
+// Configure multer for file uploads
 const storage = multer.memoryStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now()
-        cb(null, uniqueSuffix + file.originalname)
+        const uniqueSuffix = Date.now() + '-' + file.originalname;
+        cb(null, uniqueSuffix);
     }
 });
 
-// Increase the file size limit to handle larger images (adjust as necessary)
+// Increase the file size limit to handle larger images
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 1024 * 1024 * 20 // 20 MB (adjust as necessary)
+        fileSize: 1024 * 1024 * 20 // 20 MB
     }
 });
 
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Define a route to get a single post by ID
+// GET endpoint to fetch a single post by ID
 router.get('/getone/:id', async (req, res) => {
     try {
         const postId = req.params.id;
@@ -71,7 +72,7 @@ router.post("/", upload.single("image"), async (req, res) => {
             description,
             story,
             image_url: imageBuffer,
-            category: "",
+            category,
             author
         });
 
@@ -85,6 +86,26 @@ router.post("/", upload.single("image"), async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.post("/addcomment", async (req, res) => {
+    try {
+      const { postid, name, comment, profilepic } = req.body;
+      const post = await Post.findById(postid);
+  
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+  
+      post.comments.push({ name, comment, profilepic });
+  
+      await post.save();
+  
+      res.status(200).json({ message: "Comment added successfully" });
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 
 // PUT endpoint to update a post by ID
 router.put('/update/:id', upload.single('image'), async (req, res) => {
