@@ -1,39 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const postModel = require('../Schema/postModel');
-const multer = require("multer");
-
-// Configure multer for file uploads
-const storage = multer.memoryStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + file.originalname;
-        cb(null, uniqueSuffix);
-    }
-});
-
-// Increase the file size limit to handle larger images
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 20 // 20 MB
-    }
-});
 
 // GET endpoint to fetch all posts
 router.get("/", async (req, res) => {
     try {
         const posts = await postModel.find();
-        const postsWithBase64Images = posts.map(post => {
-            const base64Image = post.image_url.toString('base64');
-            return {
-                ...post._doc,
-                image_url: base64Image
-            };
-        });
-        res.status(200).json(postsWithBase64Images);
+        res.status(200).json(posts);
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred");
@@ -48,12 +21,8 @@ router.get('/getone/:id', async (req, res) => {
         if (!post) {
             return res.status(404).json({ message: 'Post not found' });
         }
-        const base64Image = post.image_url.toString('base64');
-        const postWithBase64Image = {
-            ...post._doc,
-            image_url: base64Image
-        };
-        res.json(postWithBase64Image);
+
+        res.json(post);
     } catch (error) {
         console.error('Error fetching post:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -61,20 +30,11 @@ router.get('/getone/:id', async (req, res) => {
 });
 
 // POST endpoint to upload an image along with other post data
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", async (req, res) => {
     try {
-        const { title, description, story, category, author } = req.body;
-        const imageBuffer = Buffer.from(req.file.buffer, "utf-8");
-
+        const {title, description, story, author, image_url, category} = req.body;
         // Create a new post document
-        const post = new postModel({
-            title,
-            description,
-            story,
-            image_url: imageBuffer,
-            category,
-            author
-        });
+        const post = new postModel({title, description, story, author, image_url, category});
 
         // Save the post document to the database
         await post.save();
@@ -108,16 +68,12 @@ router.post("/addcomment", async (req, res) => {
   });
 
 // PUT endpoint to update a post by ID
-router.put('/update/:id', upload.single('image'), async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     try {
         const postId = req.params.id;
-        const { title, description, story, category, author } = req.body;
-        const updateData = { title, description, story, category, author };
-
-        if (req.file) {
-            const imageBuffer = Buffer.from(req.file.buffer, "utf-8");
-            updateData.image_url = imageBuffer;
-        }
+        const { title, description, story, category, author, image_url } = req.body;
+        const updateData = { title, description, story, category, author, image_url };
+        console.log(updateData)
 
         const updatedPost = await postModel.findByIdAndUpdate(postId, updateData, { new: true });
 
@@ -125,13 +81,7 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
             return res.status(404).json({ message: 'Post not found' });
         }
 
-        const base64Image = updatedPost.image_url.toString('base64');
-        const postWithBase64Image = {
-            ...updatedPost._doc,
-            image_url: base64Image
-        };
-
-        res.status(200).json(postWithBase64Image);
+        res.status(200).json(updatedPost);
     } catch (error) {
         console.error('Error updating post:', error);
         res.status(500).json({ message: 'Internal server error' });

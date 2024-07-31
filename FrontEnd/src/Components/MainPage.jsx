@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import "./app.css";
+import "./style.css";
 import "./animation.css";
 import search from "../assets/search.png";
 import profile from "../assets/profile.jpeg";
@@ -11,6 +12,9 @@ import addPost from "../assets/addPost.png";
 import orangelogo from "../assets/orangelogo.png";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
 import { useNavigate } from "react-router-dom";
+// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 
 function MainPage() {
   const [posts, setPosts] = useState([]);
@@ -19,24 +23,34 @@ function MainPage() {
   const [account, setAccount] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
-  const UserName = Cookies.get("username");
+
+  const userNameCookie = Cookies.get("name");
+  const UserName = userNameCookie ? userNameCookie.replace(/"/g, '') : ''; 
+
 
   const handlePostClick = (postId) => {
     navigate(`/story/${postId}`);
   };
 
-  const myPost = () => {
-    navigate("/mypost");
-  };
+  // Swal.fire({
+  //   title: 'Error!',
+  //   text: 'Do you want to continue',
+  //   icon: 'error',
+  //   confirmButtonText: 'Cool'
+  // })
 
   useEffect(() => {
-    if (UserName) {
+    const user = Cookies.get("userData"); 
+    if (user) {
+      setUserData(JSON.parse(user)); 
       setAccount(true);
     } else {
-      setAccount(false);
+      setAccount(false); 
     }
-  }, [UserName]);
+  }, []);
+  
 
   useEffect(() => {
     axios
@@ -94,7 +108,7 @@ function MainPage() {
             {account && (
               <div className="">
                  <Link to="/addpost">
-                <div className="mr-32 ml-20 mt-7 text-center justify-center hover:bg-gray-200 cursor-pointer flex px-3 shadow-md py-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                <div className="mr-32 mt-7 text-center justify-center hover:bg-gray-200 cursor-pointer flex px-3 shadow-md py-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
                   <img src={addPost} alt="" width={30} />
                   <div className="ml-3 text-lg font-serif text-gray-800 tracking-wide">Share Your Story</div>
                 </div>
@@ -102,21 +116,22 @@ function MainPage() {
               </div>
             )}
             {setLoad && (
-              <div>
-                {account && (
-                  <Link to="/account">
-                    <div className="account">
-                      <img
-                        className="rounded-full h-12 w-12"
-                        src={profile}
-                        alt=""
-                      />
-                      <div>{UserName}</div>
-                    </div>
-                  </Link>
-                )}
-              </div>
-            )}
+  <div className="mr-4">
+    {account && (
+      <Link to="/account">
+        <div className="account justify-center flex flex-col items-center ">
+          <img
+            className="rounded-full  h-12 w-12"
+            src={profile}
+            alt=""
+          />
+          <div>{userData?.name}</div> {/* Display user name */}
+        </div>
+      </Link>
+    )}
+  </div>
+)}
+
 
             <div className="hamburger-icon ">
               <input
@@ -200,15 +215,15 @@ function MainPage() {
             </div>
           </div>
         )}
-        <div className="mainbody flex justify-between">
+        <div className="mainbody  flex justify-between">
           <div className="box w-3/4">
-            <div className="flex mt-8 items-center">
-              <div className="flex flex-wrap">
-                <div className="flex flex-wrap">
-                  <div className="box">
+            <div className="flex  items-center ">
+              <div className="flex flex-wrap w-full mr-20">
+                <div className="flex content-box flex-wrap">
+                  <div className="box w-full p-4">
                     {posts.map((post) => (
                       <div
-                        className="flex p-4  mt-7 border w-5/5 items-center cursor-pointer"
+                        className="flex p-4 mt-7 shadow-md border-b-4 w-5/5 items-center cursor-pointer"
                         key={post._id}
                         // onClick={() => handlePostClick(post._id)}
                       >
@@ -300,13 +315,13 @@ function MainPage() {
                             </div>
                           </div>
                         </div>
-                        <div className="ml-10">
-                          <img
+                        <div className="ml-10 ">
+                          <img className="size-image"
                             src={post.image_url}
                             onClick={() => handlePostClick(post._id)}
                             alt=""
                             width={200}
-                            height={50}
+                            height={30}
                           />
                         </div>
                       </div>
@@ -426,7 +441,7 @@ function MainPage() {
                       </button>
                     </Link>
 
-                    <Link to="/account">
+                    <Link to="/about">
                       <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
                         About TechyChats
                         <div className="icon">

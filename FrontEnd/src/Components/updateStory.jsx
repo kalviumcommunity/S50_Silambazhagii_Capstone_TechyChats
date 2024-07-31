@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { imgDB } from "./Firebase/firebaseconfig";
+import { v4 as uuidv4 } from "uuid";
 
 function UpdateStory() {
   const { id } = useParams();
@@ -12,41 +15,36 @@ function UpdateStory() {
     title: "",
     description: "",
     story: "",
-    image: null, // New state to store the file object
+    image: null,
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/posts/getone/${id}`
-        );
-        const base64Image = response.data.image_url.toString("base64");
-        const postWithBase64Image = {
-          ...response.data,
-          image_url: `data:image/png;base64,${base64Image}`,
-        };
-        setPost(postWithBase64Image);
-        setFormData({
-          title: postWithBase64Image.title,
-          description: postWithBase64Image.description,
-          story: postWithBase64Image.story,
-          image: null, // Reset image state
-        });
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching post:", error);
-        setLoading(false);
-      }
+        try {
+            const response = await axios.get(`http://localhost:3000/posts/getone/${id}`);
+            setPost(response.data);
+            setFormData({
+                title: response.data.title,
+                description: response.data.description,
+                story: response.data.story,
+                image: null,
+                image_url: response.data.image_url, 
+            });
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching post:", error);
+            setLoading(false);
+        }
     };
 
     fetchPost();
-  }, [id]);
+}, [id]);
+
 
   const handleGoBack = () => {
-    navigate("/main");
+    navigate("/myposts");
   };
 
   const handleEdit = () => {
@@ -64,7 +62,7 @@ function UpdateStory() {
   const handleImageChange = (e) => {
     setFormData({
       ...formData,
-      image: e.target.files[0], // Store the selected file object
+      image: e.target.files[0],
     });
   };
 
@@ -73,28 +71,34 @@ function UpdateStory() {
     setError(null);
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("title", formData.title);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("story", formData.story);
-      if (formData.image) {
-        formDataToSend.append("image", formData.image);
-      }
+        let image_url = post.image_url; 
 
-      await axios.put(`http://localhost:3000/posts/update/${id}`, formDataToSend);
+        if (formData.image) {
+            const storageRef = ref(imgDB, `Imgs/${uuidv4()}`);
+            const uploadTask = await uploadBytes(storageRef, formData.image);
+            image_url = await getDownloadURL(uploadTask.ref);
+        }
 
-      setEditing(false);
-      navigate("/main");
+        const updatedFormData = {
+            ...formData,
+            image_url,
+        };
+
+        await axios.put(`http://localhost:3000/posts/update/${id}`, updatedFormData);
+
+        setEditing(false);
+        navigate("/myposts");
     } catch (error) {
-      console.error("Error updating post:", error);
-      setError("Failed to update post. Please try again.");
+        console.error("Error updating post:", error);
+        setError("Failed to update post. Please try again.");
     }
-  };
+};
+
 
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:3000/posts/delete/${id}`);
-      navigate("/main");
+      navigate("/myposts");
     } catch (error) {
       console.error("Error deleting post:", error);
       setError("Failed to delete post. Please try again.");

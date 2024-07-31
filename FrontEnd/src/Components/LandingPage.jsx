@@ -11,7 +11,7 @@ function LandingPage() {
     <>
       <video autoPlay muted loop src={bgvideo} id="myVideo" className="-z-20 bg-contain hue-rotate-45">
       </video>
-        <div className="body1 justify-center items-center text-center h-screen">
+        <div className="body1 p-5 justify-center items-center text-center h-screen">
           <nav className=" flex justify-between text-white text-center font-semibold text-lg px-7">
             <div className="font-semibold flex text-3xl tracking-widest">
               <img src={orangelogo} width={70} alt="" />

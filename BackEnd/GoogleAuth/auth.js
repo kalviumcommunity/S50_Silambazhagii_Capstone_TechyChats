@@ -1,8 +1,8 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
-const User = require("./Schema/userModel");
-const GOOGLE_CLIENT_ID = "59271826044-q07hikmlq4qrnr83ps2hpou0eim8v36i.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const User = require("../Schema/userModel");
+const GOOGLE_CLIENT_ID = "89274911207-1m8n8e5s5modqiobno5nns56ij7oaf5c.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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";
 
 passport.use(
   new GoogleStrategy(
@@ -36,12 +36,13 @@ passport.use(
         return done(null, newUser);
       }else{
         
-        request.res.cookie("userData", JSON.stringify(existingProfile), {
+        request.res.cookie("userData", JSON.stringify(newUser), {
           httpOnly: false,
         });
-        request.res.cookie("name", JSON.stringify(profile.given_name), {
+        request.res.cookie("username", profile.given_name, {
           httpOnly: false,
         });
+        
       }
     }
   )

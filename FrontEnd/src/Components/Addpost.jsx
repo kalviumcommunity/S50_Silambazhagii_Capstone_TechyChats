@@ -25,31 +25,34 @@ function Addpost() {
   };
 
   const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("story", story);
+    let errors = [];
+    if (!title) errors.push("Title");
+    if (!description) errors.push("Description");
+    if (!story) errors.push("Story");
+    if (files.length === 0) errors.push("File");
+
+    if (errors.length > 0) {
+      alert(`Please fill ${errors.join(", ")}.`);
+      return;
+    }
 
     try {
-      // Upload image to Firebase Storage
-      if (files.length > 0) {
+
         const storageRef = ref(imgDB, `Imgs/${uuidv4()}`);
         const uploadTask = await uploadBytes(storageRef, files[0]);
-        const imageUrl = await getDownloadURL(uploadTask.ref);
-        formData.append("image", imageUrl);
-      }
+        const image_url = await getDownloadURL(uploadTask.ref);
 
-      // Send form data to the backend
-      await axios.post("http://localhost:3000/posts", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        const formData = {
+          title, description, story, image_url
+        }
+
+      await axios.post("http://localhost:3000/posts", formData);
       navigate('/main');
     } catch (error) {
       console.error("Error posting data:", error);
     }
   };
+
   return (
     <div className="mx-auto px-16 mb-10">
       <nav className="flex justify-between items-center">

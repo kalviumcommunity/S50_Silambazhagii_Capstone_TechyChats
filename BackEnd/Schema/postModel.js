@@ -16,6 +16,9 @@ const postSchema = new mongoose.Schema({
     image_url: {
         type: String,
     },
+    video: {
+        type: String,
+    },
     category: {
         type: String,
     },

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import profile from "../assets/profile.jpeg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function MyPosts() {
   const [posts, setPosts] = useState([]);
@@ -13,23 +13,20 @@ function MyPosts() {
     navigate(`/updatestory/${postId}`);
   };
 
-  const handleEditClick = (postId) => {
-    navigate(`/edit/${postId}`);
+  const handleGoHome = () => {
+    navigate("/main");
+  };
+
+  const handleEditClick = (postId, e) => {
+    e.stopPropagation(); // Ensure the post click event does not trigger
+    navigate(`/updatestory/${postId}`);
   };
 
   useEffect(() => {
     axios
       .get("http://localhost:3000/posts")
       .then((response) => {
-        const postsWithBase64Images = response.data.map((post) => {
-          const base64Image = post.image_url.toString("base64");
-          return {
-            ...post,
-            image_url: `data:image/png;base64,${base64Image}`,
-          };
-        });
-        console.log(postsWithBase64Images);
-        setPosts(postsWithBase64Images);
+        setPosts(response.data); // Directly use the image URLs from the response
         setLoad(false);
       })
       .catch((error) => {
@@ -40,9 +37,30 @@ function MyPosts() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* <Link to="/main">
+      <div>Go back</div>
+      </Link> */}
+<button
+  onClick={handleGoHome}
+  className="absolute top-4 left-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full shadow-lg focus:outline-none focus:shadow-outline transform transition-transform duration-300 hover:scale-105"
+  title="Go to Home"
+>
+  {/* Optional icon for uniqueness */}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    className="inline-block mr-2"
+  >
+    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+  </svg>
+  Home
+</button>
+
       {posts.map((post) => (
         <div
-          className="flex flex-col md:flex-row items-center md:items-start md:justify-between p-6 mb-6 border rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow duration-300"
+          className="flex flex-col md:flex-row items-center mt-10 md:items-start md:justify-between p-6 mb-6 border rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow duration-300"
           onClick={() => handlePostClick(post._id)}
           key={post._id}
         >
@@ -56,6 +74,7 @@ function MyPosts() {
                 width={30}
                 className="rounded-full mr-2"
               />
+              
               <div className="text-sm text-gray-600">{post.author}</div>
             </div>
             <div className="flex items-center justify-between">
@@ -99,10 +118,7 @@ function MyPosts() {
                 <div className="text-xs ml-1">{like}</div>
                 <button
                   className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline"
-                  onClick={(e) => {
-                    // e.stopPropagation();
-                    // handleEditClick(post._id);
-                  }}
+                  onClick={(e) => handleEditClick(post._id, e)} // Uncommented to enable edit functionality
                 >
                   Edit
                 </button>
@@ -121,8 +137,8 @@ function MyPosts() {
           </div>
           <div className="md:ml-10 mt-4 md:mt-0 w-full md:w-1/4">
             <img
-              src={post.image_url}
-              alt=""
+              src={post.image_url} 
+              alt={post.title} 
               className="rounded-lg shadow-sm w-full h-auto"
             />
           </div>

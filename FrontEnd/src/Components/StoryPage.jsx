@@ -15,12 +15,8 @@ function StoryPage() {
         const response = await axios.get(
           `http://localhost:3000/posts/getone/${id}`
         );
-        const base64Image = response.data.image_url.toString("base64");
-        const postWithBase64Image = {
-          ...response.data,
-          image_url: `data:image/png;base64,${base64Image}`,
-        };
-        setPost(postWithBase64Image);
+
+        setPost(response.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching post:", error);

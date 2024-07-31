@@ -4,10 +4,11 @@ const connectDB = require("./config.js/connect");
 const port = 3000;
 const userRouter = require("./Routes/user");
 const postRouter = require("./Routes/post");
-require("./auth")
+require("./GoogleAuth/auth")
 const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
+
 connectDB();
 
 app.use(session({

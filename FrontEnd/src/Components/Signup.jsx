@@ -20,10 +20,10 @@ function Signup() {
   const [googleClicked, setGoogleClicked] = useState(false); 
 
   const handleGoogleClick = () => {
-    setGoogleClicked(true); // Set state to true when Google sign-up is clicked
-    // console.log(data)
+    setGoogleClicked(true);
     window.location.href = "http://localhost:3000/auth/google";
   }
+  
 
   const onSubmit = async (data) => {
     console.log(data);
