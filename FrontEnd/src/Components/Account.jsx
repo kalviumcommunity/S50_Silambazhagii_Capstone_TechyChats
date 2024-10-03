@@ -11,47 +11,32 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 function Account() {
-  const UserName = Cookies.get("username");
-  const UserEmail = Cookies.get("useremail");
-  const UserBio = Cookies.get("userbio");
-
+  const userId = Cookies.get("userId").replace(/\"/g, "");
   const [posts, setPosts] = useState([]);
   const [editMode, setEditMode] = useState(false);
-  const [updatedUserName, setUpdatedUserName] = useState(UserName);
-  const [updatedUserEmail, setUpdatedUserEmail] = useState(UserEmail);
-  const [updatedUserBio, setUpdatedUserBio] = useState(UserBio);
-
+  const [updatedUserName, setUpdatedUserName] = useState("");
+  const [updatedUserEmail, setUpdatedUserEmail] = useState("");
+  const [updatedUserBio, setUpdatedUserBio] = useState("");
+  const [userData, setUserData] = useState({});
   const [skills, setSkills] = useState("");
   const [dob, setDob] = useState(new Date());
-  const [place, setPlace] = useState("");
+  const [place, setPlace] = useState(""); 
 
   const navigate = useNavigate();
 
-  axios.put("http://localhost:3000/users", {
-    name: updatedUserName,
-    email: updatedUserEmail,
-    bio: updatedUserBio,
-  });
-
   useEffect(() => {
     axios
-      .get("http://localhost:3000/posts")
+      .get(`http://localhost:3000/users/${userId}`)
       .then((response) => {
-        const postsWithBase64Images = response.data.map((post) => {
-          const base64Image = post.image_url.toString("base64");
-          return {
-            ...post,
-            image_url: `data:image/png;base64,${base64Image}`,
-          };
-        });
-        console.log(postsWithBase64Images);
-
-        setPosts(postsWithBase64Images);
-        setLoad(false);
+        console.log(response);
+        setUpdatedUserEmail(response.data.email);
+        setUpdatedUserName(response.data.name);
+        setSkills(response.data.skills || "");
+        setDob(new Date(response.data.dob || Date.now()));
+        setPlace(response.data.place || "");
       })
       .catch((error) => {
         console.log(error);
-        setLoad(false);
       });
   }, []);
 
@@ -68,24 +53,41 @@ function Account() {
   };
 
   const handleSubmit = () => {
-    Cookies.set("username", updatedUserName);
-    Cookies.set("useremail", updatedUserEmail);
-    Cookies.set("userbio", updatedUserBio);
-    Cookies.set("skills", skills);
-    Cookies.set("dob", dob.toISOString());
-    Cookies.set("place", place);
+    console.log(updatedUserBio)
+    console.log(skills)
+    console.log(place)
+    console.log(dob)
+    axios
+      .put(`http://localhost:3000/users/${userId}`, {
+        name: updatedUserName,
+        email: updatedUserEmail,
+        bio: updatedUserBio,
+        skills: skills,
+        dob: dob.toISOString(),
+        place: place,
+      })
+      .then((response) => {
+        setUpdatedUserEmail(response.data.email);
+        setUpdatedUserName(response.data.name);
+        setUpdatedUserBio(response.data.bio);
+        setDob(response.data.dob);
+        setSkills(response.data.skills);
 
-    navigate("/main");
-    setEditMode(false);
+        setEditMode(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // navigate("/main");
   };
 
   const logout = () => {
-    Cookies.remove("username");
-    Cookies.remove("useremail");
-    Cookies.remove("userbio");
-    Cookies.remove("skills");
-    Cookies.remove("dob");
-    Cookies.remove("place");
+    Cookies.remove("userId");
+    // Cookies.remove("useremail");
+    // Cookies.remove("userbio");
+    // Cookies.remove("skills");
+    // Cookies.remove("dob");
+    // Cookies.remove("place");
 
     navigate("/main");
   };
@@ -155,10 +157,11 @@ function Account() {
                     placeholder="Enter your Name"
                     className="border rounded-md px-2 py-1 w-3/4"
                     value={updatedUserName}
+                    defaultValue={updatedUserName}
                     onChange={(e) => setUpdatedUserName(e.target.value)}
                   />
                 ) : (
-                  <div>{UserName}</div>
+                  <div>{updatedUserName}</div>
                 )}
               </div>
               <div className="flex items-center mb-4 w-full">
@@ -171,10 +174,11 @@ function Account() {
                     placeholder="Add your Email"
                     className="border rounded-md px-2 py-1 w-3/4"
                     value={updatedUserEmail}
+                    defaultValue={updatedUserEmail}
                     onChange={(e) => setUpdatedUserEmail(e.target.value)}
                   />
                 ) : (
-                  <div>{UserEmail}</div>
+                  <div>{updatedUserEmail}</div>
                 )}
               </div>
               <div className="flex items-center mb-4 w-full">
@@ -190,7 +194,7 @@ function Account() {
                     onChange={(e) => setUpdatedUserBio(e.target.value)}
                   />
                 ) : (
-                  <div>{UserBio}</div>
+                  <div>{updatedUserBio}</div>
                 )}
               </div>
               <div className="flex items-center mb-4 w-full">
@@ -221,7 +225,7 @@ function Account() {
                     className="border rounded-md px-2 py-1 w-3/4"
                   />
                 ) : (
-                  <div>{dob.toLocaleDateString()}</div>
+                  <div>{dob?.toLocaleDateString() || "No Date Provided"}</div>
                 )}
               </div>
               <div className="flex items-center w-full">
@@ -242,7 +246,6 @@ function Account() {
               </div>
             </div>
           </div>
-          {/* Submit button centered */}
           <div className="flex justify-center w-full">
             {editMode && (
               <motion.button
@@ -268,16 +271,13 @@ function Account() {
                 whileHover={{ scale: 1.05 }}
                 onClick={toggleEditMode}
               >
-                <button className="">
-                  <FontAwesomeIcon icon={faEdit} /> Edit
-                </button>
+                <FontAwesomeIcon icon={faEdit} /> Edit
               </motion.button>
             )}
           </div>
-
           <div className="flex justify-center mt-8">
             <Link to="/myposts">
-              <button class="btn-96 h-10 shadow-xl">
+              <button className="btn-96 h-10 shadow-xl">
                 <span>View my Posts</span>
               </button>
             </Link>

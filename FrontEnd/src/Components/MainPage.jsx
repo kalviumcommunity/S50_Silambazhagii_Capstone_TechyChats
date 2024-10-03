@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -7,50 +7,65 @@ import "./style.css";
 import "./animation.css";
 import search from "../assets/search.png";
 import profile from "../assets/profile.jpeg";
-import comments from "../assets/comments.png";
+import commentsIcon from "../assets/commentsIcon.png";
 import addPost from "../assets/addPost.png";
 import orangelogo from "../assets/orangelogo.png";
 import TECHYCHATS from "../assets/TECHYCHATS.png";
 import { useNavigate } from "react-router-dom";
-// import Swal from 'sweetalert2'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
-import 'sweetalert2/src/sweetalert2.scss'
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
+import Comments from "./Comments";
 
 function MainPage() {
   const [posts, setPosts] = useState([]);
+  const [userNameCookie, setUserNameCookie] = useState(
+    Cookies.get("name") ? Cookies.get("name").replace(/"/g, "") : ""
+  );
+  const UserName = userNameCookie;
+
   const [like, setLike] = useState(0);
+  const [bookmark, setBookmark] = useState(false);
+
+  const [likedPosts, setLikedPosts] = useState({});
+
   const [load, setLoad] = useState(true);
   const [account, setAccount] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [activeCommentPost, setActiveCommentPost] = useState(null);
   const navigate = useNavigate();
-
-  const userNameCookie = Cookies.get("name");
-  const UserName = userNameCookie ? userNameCookie.replace(/"/g, '') : ''; 
-
 
   const handlePostClick = (postId) => {
     navigate(`/story/${postId}`);
   };
 
-  // Swal.fire({
-  //   title: 'Error!',
-  //   text: 'Do you want to continue',
-  //   icon: 'error',
-  //   confirmButtonText: 'Cool'
-  // })
+  const handleBookmarkToggle = () => {
+    setBookmark((prev) => !prev); // Toggle bookmark state
+  };
+
+  const handleSave = () => {
+    // This is where you can save the bookmark state to another component
+    console.log("Bookmark saved:", bookmark);
+  };
+
+  const handleCommentClick = (post) => {
+    setActiveCommentPost(post);
+  };
+
+  const handleCloseCommentBox = () => {
+    setActiveCommentPost(null);
+  };
 
   useEffect(() => {
-    const user = Cookies.get("userData"); 
+    const user = Cookies.get("userId");
     if (user) {
-      setUserData(JSON.parse(user)); 
+      setUserData(JSON.parse(user));
       setAccount(true);
     } else {
-      setAccount(false); 
+      setAccount(false);
     }
   }, []);
-  
 
   useEffect(() => {
     axios
@@ -58,12 +73,42 @@ function MainPage() {
       .then((response) => {
         setPosts(response.data);
         setLoad(false);
+        // Initialize likedPosts state with data from the server (if available)
+        setLikedPosts(
+          response.data.reduce(
+            (acc, post) => ({ ...acc, [post._id]: false }),
+            {}
+          ) // Set initial like state to false for all posts
+        );
       })
       .catch((error) => {
         console.log(error);
         setLoad(false);
       });
   }, []);
+
+  const handleLikeToggle = async (postId) => {
+    try {
+      const isLiked = likedPosts[postId]; // Get current like status from state
+      const response = await axios.put(
+        `http://localhost:3000/posts/like/${postId}`,
+        { isLiked: !isLiked }
+      );
+      const updatedPost = response.data;
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => (post._id === postId ? updatedPost : post))
+      );
+
+      // Update like status in state
+      setLikedPosts((prevLikedPosts) => ({
+        ...prevLikedPosts,
+        [postId]: !isLiked,
+      }));
+    } catch (error) {
+      console.error("Error updating like status:", error);
+    }
+  };
 
   return (
     <>
@@ -77,7 +122,7 @@ function MainPage() {
           </div>
           <div className="relative">
             <input
-              className="bg-gray-200 border outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
+              className="bg-gray-200 border ml-20 outline-zinc-300 rounded-full py-1 hover:bg-gray-300 px-5 w-96"
               type="text"
               name=""
               id=""
@@ -107,31 +152,32 @@ function MainPage() {
             )}
             {account && (
               <div className="">
-                 <Link to="/addpost">
-                <div className="mr-32 mt-7 text-center justify-center hover:bg-gray-200 cursor-pointer flex px-3 shadow-md py-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
-                  <img src={addPost} alt="" width={30} />
-                  <div className="ml-3 text-lg font-serif text-gray-800 tracking-wide">Share Your Story</div>
-                </div>
-              </Link>
+                <Link to="/addpost">
+                  <div className="mr-32 mt-7 text-center justify-center hover:bg-gray-200 cursor-pointer flex px-3 shadow-md py-4 transition-transform duration-300 ease-in-out transform hover:scale-105">
+                    <img src={addPost} alt="" width={30} />
+                    <div className="ml-3 text-lg font-serif text-gray-800 tracking-wide">
+                      Share Your Story
+                    </div>
+                  </div>
+                </Link>
               </div>
             )}
             {setLoad && (
-  <div className="mr-4">
-    {account && (
-      <Link to="/account">
-        <div className="account justify-center flex flex-col items-center ">
-          <img
-            className="rounded-full  h-12 w-12"
-            src={profile}
-            alt=""
-          />
-          <div>{userData?.name}</div> {/* Display user name */}
-        </div>
-      </Link>
-    )}
-  </div>
-)}
-
+              <div className="mr-4">
+                {account && (
+                  <Link to="/account">
+                    <div className="account justify-center flex flex-col items-center ">
+                      <img
+                        className="rounded-full  h-12 w-12"
+                        src={profile}
+                        alt=""
+                      />
+                      <div>{UserName}</div> {/* Display user name */}
+                    </div>
+                  </Link>
+                )}
+              </div>
+            )}
 
             <div className="hamburger-icon ">
               <input
@@ -148,45 +194,60 @@ function MainPage() {
             </div>
           </div>
         </nav>
-        <div className="relative">
+        {/* <div className="relative">
           <div
-            className="hover:text-gray-500 w-fit cursor-pointer "
+            className="hover:text-gray-500 w-fit ml-0 cursor-pointer "
             onClick={() => setShowCategoriesDropdown(!showCategoriesDropdown)}
           >
             Categories
           </div>
           {showCategoriesDropdown && (
-            <div className="  left-0 bg-white shadow-md rounded-md z-10 px-5 nav-container w-full py-3 flex justify-between items-center relative">
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                AI
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Technology
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Blockchain
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Gadgets
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Problem Solving
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Phones
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Software
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Future Tech
-              </div>
-              <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
-                Autonomous Vehicles
-              </div>
-            </div>
+            // <div className="  left-0 bg-white shadow-md rounded-md z-10 px-5 nav-container w-full py-3 flex justify-between items-center relative">
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     AI
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Technology
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Blockchain
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Gadgets
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Problem Solving
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Phones
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Software
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Future Tech
+            //   </div>
+            //   <div className="hover:text-gray-500 cursor-pointer px-4 py-2">
+            //     Autonomous Vehicles
+            //   </div>
+            // </div>
           )}
-        </div>{" "}
+        </div>{" "} */}
+        {account && (
+          <div>
+            {activeCommentPost && (
+              <div className="fixed inset-0 z-50  bg-black bg-opacity-50  flex items-end justify-center">
+                <div className="animate-slide-up">
+                  <Comments
+                    post={activeCommentPost}
+                    onClose={handleCloseCommentBox}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {load && (
           <div className="boxes mt-[20%] ml-[50%]">
             <div className="box">
@@ -215,7 +276,7 @@ function MainPage() {
             </div>
           </div>
         )}
-        <div className="mainbody  flex justify-between">
+        <div className="mainbody flex justify-between">
           <div className="box w-3/4">
             <div className="flex  items-center ">
               <div className="flex flex-wrap w-full mr-20">
@@ -249,9 +310,9 @@ function MainPage() {
                                   width={27}
                                   className="rounded-full"
                                 />
-                                <div className="text-sm ml-2">
-                                  {post.author}
-                                </div>
+                                {account && (
+                                  <div className="text-sm ml-2">{UserName}</div>
+                                )}
                                 <div className="heart-container" title="Like">
                                   <input
                                     type="checkbox"
@@ -260,7 +321,12 @@ function MainPage() {
                                   />
                                   <div
                                     className="svg-container"
-                                    // onClick={incrementLike}
+                                    onClick={() =>
+                                      handleLikeToggle(
+                                        post._id,
+                                        likedPosts[post._id]
+                                      )
+                                    }
                                   >
                                     <svg
                                       viewBox="0 0 24 24"
@@ -292,31 +358,44 @@ function MainPage() {
                                   </div>
                                 </div>
 
-                                <div className="text-xs ml-1">{like}</div>
+                                <div className="text-xs ml-1 flex flex-row ">
+                                  {post.likes || 0}
+                                </div>
+
+                                {/* <div className="text-xs ml-1">{like}</div> */}
                                 <img
-                                  className="ml-10"
-                                  src={comments}
-                                  alt=""
-                                  width={20}
+                                  src={commentsIcon}
+                                  className
+                                  width={100}
+                                  alt="Comments"
+                                  onClick={() => handleCommentClick(post)}
                                 />
                               </div>
+
                               <div>
-                                <label className="ui-bookmark">
-                                  <input type="checkbox" />
-                                  <div className="bookmark">
-                                    <svg viewBox="0 0 32 32">
-                                      <g>
-                                        <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
-                                      </g>
-                                    </svg>
-                                  </div>
-                                </label>
+                                <div onClick={handleSave}>
+                                  <label className="ui-bookmark">
+                                    <input
+                                      type="checkbox"
+                                      checked={bookmark}
+                                      onChange={handleBookmarkToggle}
+                                    />{" "}
+                                    <div className="bookmark">
+                                      <svg viewBox="0 0 32 32">
+                                        <g>
+                                          <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
+                                        </g>
+                                      </svg>
+                                    </div>
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                         <div className="ml-10 ">
-                          <img className="size-image"
+                          <img
+                            className="size-image"
                             src={post.image_url}
                             onClick={() => handlePostClick(post._id)}
                             alt=""
@@ -326,6 +405,7 @@ function MainPage() {
                         </div>
                       </div>
                     ))}
+                    {/* Conditionally render Comments component */}
                   </div>
                 </div>
               </div>
@@ -335,67 +415,67 @@ function MainPage() {
           {/* Hamburger Menu */}
 
           {!load && (
-            <div className="flex border h-fit">
+            <div className="flex fixed right-0 border mr-14 px-7 mt-0 h-fit justify-center">
               {!showHamburgerMenu && (
-                <div className="grid items-center">
-                  {/* {!showHamburgerMenu && ( */}
-                  <div className="w-80 mt-10 ml-20 p-10 items-center justify-center text-center">
+                <div className="flex flex-col items-center">
+                  <div className="w-80 mt-10 p-10 text-center">
                     <div className="font-bold text-lg">Top Picks</div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                    <div className="shadow-xl flex items-center justify-center py-5 mt-5 w-full">
                       <img
                         src={profile}
                         width={35}
                         className="rounded-full"
                         alt=""
                       />
-                      <div className="ml-5">Musthafa</div>
+                      <div className="ml-5">Jubii</div>
                     </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5">
+                    <div className="shadow-xl flex items-center justify-center py-5 mt-5 w-full">
                       <img
                         src={profile}
                         width={35}
                         className="rounded-full"
                         alt=""
                       />
-                      <div className="ml-5">Jithumon</div>
+                      <div className="ml-5">Jimmy</div>
                     </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <div className="shadow-xl flex items-center justify-center py-5 mt-5 w-full">
                       <img
                         src={profile}
                         width={35}
                         className="rounded-full"
                         alt=""
                       />
-                      <div className="ml-5">Shahabas</div>
+                      <div className="ml-5">Kookie</div>
                     </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <div className="shadow-xl flex items-center justify-center py-5 mt-5 w-full">
                       <img
                         src={profile}
                         width={35}
                         className="rounded-full"
                         alt=""
                       />
-                      <div className="ml-5">Shahillu</div>
+                      <div className="ml-5">Hobii</div>
                     </div>
 
-                    <div className="shadow-xl items-center flex justify-center py-5 mt-5 ">
+                    <div className="shadow-xl flex items-center justify-center py-5 mt-5 w-full">
                       <img
                         src={profile}
                         width={35}
                         className="rounded-full"
                         alt=""
                       />
-                      <div className="ml-5">Silambam</div>
+                      <div className="ml-5">Namjoon</div>
                     </div>
                   </div>
                 </div>
               )}
             </div>
           )}
+
           {!load && (
             <div>
               {showHamburgerMenu && (
@@ -441,6 +521,26 @@ function MainPage() {
                       </button>
                     </Link>
 
+                    <Link to="/saved">
+                      <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
+                        Saved
+                        <div className="icon">
+                          <svg
+                            height="24"
+                            width="24"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path
+                              d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"
+                              fill="currentColor"
+                            ></path>
+                          </svg>
+                        </div>
+                      </button>
+                    </Link>
+
                     <Link to="/about">
                       <button className="cssbuttons-io-button w-56 text-center py-5 mt-7">
                         About TechyChats
@@ -466,6 +566,13 @@ function MainPage() {
             </div>
           )}
         </div>
+        {/* {activeCommentPost && (
+          <CommentBox
+            entity={activeCommentPost}
+            onClose={handleCloseCommentBox}
+            type="posts"
+          />
+        )} */}
       </div>
     </>
   );

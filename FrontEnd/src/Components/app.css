@@ -1,63 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap");
 
-
-
-
-  /* app.css */
+/* app.css */
 #myVideo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover; /* Ensures the video covers the container */
-    z-index: -1; /* Ensures the video is behind other content */
-  }
-  
-  /* Ensure body1 takes full height of the viewport */
-  .body1 {
-    position: relative;
-    height: 100vh;
-  }
-  
-
-.topic{
-    font-size: 35px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover; /* Ensures the video covers the container */
+  z-index: -1; /* Ensures the video is behind other content */
 }
 
-body{
-    height: 100%;
-    width: 100%;
+/* Ensure body1 takes full height of the viewport */
+.body1 {
+  position: relative;
+  height: 100vh;
 }
-.container{
-    backdrop-filter: blur(2px);
-    max-width: 500px;
-    width: 100%;
-    padding: 0 20px;
+.comments-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
 }
-.signup{
-    backdrop-filter: blur(2px);
-    width: 100%;
-    padding: 0 20px;
-    justify-content: center;
-    align-items: center;
+
+.comments-section ul {
+  list-style-type: none;
 }
-.main{
-    /* position: relative; */
-    overflow: hidden;
+
+.comments-section input {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
 }
-.mainbody{
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+
+.comments-section button {
+  padding: 10px;
+  background-color: orange;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
-.login{
-    backdrop-filter: blur(2px);
-    width: 100%;
-    padding: 0 20px;
-    justify-content: center;
-    align-items: center;
+
+.comments-section button:hover {
+  background-color: darkorange;
+}
+
+.topic {
+  font-size: 35px;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+}
+.container {
+  backdrop-filter: blur(2px);
+  max-width: 500px;
+  width: 100%;
+  padding: 0 20px;
+}
+.signup {
+  backdrop-filter: blur(2px);
+  width: 100%;
+  padding: 0 20px;
+  justify-content: center;
+  align-items: center;
+}
+.main {
+  /* position: relative; */
+  overflow: hidden;
+}
+.mainbody {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.login {
+  backdrop-filter: blur(2px);
+  width: 100%;
+  padding: 0 20px;
+  justify-content: center;
+  align-items: center;
 }
 
 .particle-container {
@@ -65,10 +88,9 @@ body{
   width: 100%;
   height: 100vh;
   font-family: "Tektur", sans-serif;
-
 }
 
-.content{
+.content {
   position: absolute;
   top: 0;
   left: 0;
@@ -78,28 +100,46 @@ body{
   /* font-optical-sizing: auto; */
   /* font-style: normal; */
   /* font-variation-settings: */
-    /* "wdth" 100; */
+  /* "wdth" 100; */
   /* font-size: 24px;  */
 }
 
-
-.navii{
-    font-family: "Tektur", sans-serif;
-    font-size: 40px;
-    color: #F8F4EC;
+.navii {
+  font-family: "Tektur", sans-serif;
+  font-size: 40px;
+  color: #f8f4ec;
 }
-p{
-    padding-left: 40px;
-    padding-right: 40px;
-    font-family: serif;
-    font-size: 18px;
+p {
+  padding-left: 40px;
+  padding-right: 40px;
+  font-family: serif;
+  font-size: 18px;
 }
 
 .content-box {
-    width: 100%; /* Set this to a fixed width, e.g., 800px or any value you prefer */
-    max-width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    flex: 0 0 auto;
+  width: 100%; /* Set this to a fixed width, e.g., 800px or any value you prefer */
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+}
+
+
+
+/* animation - comment */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
-  
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+

@@ -10,6 +10,8 @@ import Addpost from "./Components/Addpost";
 import StoryPage from "./Components/StoryPage";
 import UpdateStory from "./Components/updateStory";
 import MyPosts from "./Components/MyPosts";
+import Comments from "./Components/Comments";
+import Saved from "./Components/Saved";
 
 function App() {
   return (
@@ -23,7 +25,9 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/account" element={<Account />} />
       <Route path="/addpost" element={<Addpost />} />
+      <Route path="/comment" element={<Comments />} />
       <Route path="/story/:id" element={<StoryPage />} />
+      <Route path="/saved" element={<Saved />} />
       <Route path="/updatestory/:id" element={<UpdateStory />} />
     </Routes>
   );
