@@ -4,10 +4,11 @@ const connectDB = require("./config.js/connect");
 const port = 3000;
 const userRouter = require("./Routes/user");
 const postRouter = require("./Routes/post");
-require("./auth")
+require("./GoogleAuth/auth")
 const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
+
 connectDB();
 
 app.use(session({
@@ -16,6 +17,22 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false },
 }));
+
+// // Backend route for getting and adding comments
+// app.get('/posts/:id/comments', (req, res) => {
+//   const postId = req.params.id;
+//   // Fetch comments from the database by postId
+//   const comments = getCommentsByPostId(postId);
+//   res.json(comments);
+// });
+
+// app.post('/posts/:id/comments', (req, res) => {
+//   const postId = req.params.id;
+//   const { author, text } = req.body;
+//   // Add a comment to the database
+//   const newComment = addCommentToPost(postId, author, text);
+//   res.status(201).json(newComment);
+// });
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -49,16 +66,19 @@ app.get(
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 
-
-app.get('/logout', (req, res) => {
-  req.logout(err => {
+app.get("/logout", (req, res) => {
+  req.logout(function (err) {
     if (err) {
-      return res.status(500).send('Error logging out');
+      return res.status(500).send("Error logging out");
     }
-    req.session.destroy(() => {
-      res.send('Goodbye!');
+    req.session.destroy(function (err) {
+      if (err) {
+        return res.status(500).send("Error destroying session");
+      }
+      res.send("User logged out successfully");
     });
   });
+
 });
 
 app.listen(port, () => {

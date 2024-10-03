@@ -9,10 +9,10 @@ import fb from "../assets/fb.png";
 
 function About() {
   return (
-    <>
+
       <div className="particle-container">
         <ParticleApp />
-        <div className="content text-white  p-10">
+        <div className="content text-white  p-10 z-[100]">
           <nav className="navii text-center font-semibold ">TECHYCHATS</nav>
           <div className="flex flex-row items-center">
             <div className="mt-7 topic">
@@ -178,7 +178,7 @@ function About() {
         <div className="text-center mt-10 h-16 text-xl">👩🏼‍💻 Embark on this journey and tailor it to reflect your unique vision for TechyChats! 💻</div>
         </div>
       </div>
-    </>
+
   );
 }
 

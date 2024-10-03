@@ -180,3 +180,10 @@ canvas{
     margin: 2%;
     margin-top: 8%;
 }
+
+
+.size-image {
+  width: 230px;
+  height: 130px;
+  object-fit: cover;
+}

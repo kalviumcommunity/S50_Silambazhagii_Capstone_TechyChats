@@ -1,137 +1,239 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const postModel = require('../Schema/postModel');
-const multer = require("multer");
-
-const storage = multer.memoryStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now()
-        cb(null, uniqueSuffix + file.originalname)
-    }
-});
-
-// Increase the file size limit to handle larger images (adjust as necessary)
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 20 // 20 MB (adjust as necessary)
-    }
-});
+const postModel = require("../Schema/postModel");
+const userModel = require("../Schema/userModel");
 
 // GET endpoint to fetch all posts
 router.get("/", async (req, res) => {
-    try {
-        const posts = await postModel.find();
-        const postsWithBase64Images = posts.map(post => {
-            const base64Image = post.image_url.toString('base64');
-            return {
-                ...post._doc,
-                image_url: base64Image
-            };
-        });
-        res.status(200).json(postsWithBase64Images);
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("An error occurred");
-    }
+  try {
+    const posts = await postModel.find();
+    res.status(200).json(posts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred");
+  }
 });
 
-// Define a route to get a single post by ID
-router.get('/getone/:id', async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const post = await postModel.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-        const base64Image = post.image_url.toString('base64');
-        const postWithBase64Image = {
-            ...post._doc,
-            image_url: base64Image
-        };
-        res.json(postWithBase64Image);
-    } catch (error) {
-        console.error('Error fetching post:', error);
-        res.status(500).json({ message: 'Internal server error' });
+
+// GET endpoint to fetch a single post by ID
+router.get("/getone/:id", async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
     }
+
+    res.json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // POST endpoint to upload an image along with other post data
-router.post("/", upload.single("image"), async (req, res) => {
-    try {
-        const { title, description, story, category, author } = req.body;
-        const imageBuffer = Buffer.from(req.file.buffer, "utf-8");
+router.post("/", async (req, res) => {
+  try {
+    const { title, description, story, author, image_url, category } = req.body;
+    // Create a new post document
+    const post = new postModel({
+      title,
+      description,
+      story,
+      author,
+      image_url,
+      category,
+    });
 
-        // Create a new post document
-        const post = new postModel({
-            title,
-            description,
-            story,
-            image_url: imageBuffer,
-            category: "",
-            author
-        });
+    // Save the post document to the database
+    await post.save();
 
-        // Save the post document to the database
-        await post.save();
-
-        // Return the created post
-        res.status(201).json(post);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+    // Return the created post
+    res.status(201).json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-// PUT endpoint to update a post by ID
-router.put('/update/:id', upload.single('image'), async (req, res) => {
+router.get("/:id/comments", async (req, res) => {
+  try {
+    const postId = req.params.id
+    console.log(postId)
+    const post = await postModel.findById(postId);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comments = post.comments
+    res.status(200).json(comments);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred");
+  }
+});
+
+router.post("/:id/comments", async (req, res) => {
+  const postId = req.params.id;
+  const { message, profile, postedTime } = req.body;
+    console.log(req.body)
+
+  
+  const user = await userModel.findById(profile);
+  if (!user) return res.status(404).json({ message: "User not found" });
+  
+  console.log(postedTime)
+  const post = await postModel.findById(postId);
+  if (!post) return res.status(404).json({ message: "Post not found" });
+  
+  post.comments.push({ name: user.name, message, profile, postedTime });
+  await post.save();
+  res.status(200).json({ name: user.name, message, profile, postedTime });
+});
+
+// DELETE endpoint to delete a comment from a post
+router.delete("/:postId/comments/:commentId", async (req, res) => {
+  const { postId, commentId } = req.params;
+  
+  try {
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Find and remove the comment from the post
+    const commentIndex = post.comments.findIndex(comment => comment._id.toString() === commentId);
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    post.comments.splice(commentIndex, 1);  // Remove comment from array
+    await post.save();  // Save the updated post
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+// router.post("/addcomment", async (req, res) => {
+//     try {
+//       const { postid, name, comment, profilepic } = req.body;
+//       const post = await Post.findById(postid);
+
+//       if (!post) {
+//         return res.status(404).json({ error: "Post not found" });
+//       }
+
+//       post.comments.push({ name, comment, profilepic });
+
+//       await post.save();
+
+//       res.status(200).json({ message: "Comment added successfully" });
+//     } catch (error) {
+//       console.error("Error adding comment:", error);
+//       res.status(500).json({ error: "Internal Server Error" });
+//     }
+//   });
+
+//   router.post("/addcomment", async (req, res) => {
+//     try {
+//         const { postid, name, message, profile } = req.body;  // Fixed the field names
+//         const post = await Post.findById(postid);
+
+//         if (!post) {
+//             return res.status(404).json({ error: "Post not found" });
+//         }
+
+//         // Add new comment to the post
+//         post.comments.push({ name, message, profile });
+
+//         // Save the updated post
+//         await post.save();
+
+//         res.status(200).json({ message: "Comment added successfully" });
+//     } catch (error) {
+//         console.error("Error adding comment:", error);
+//         res.status(500).json({ error: "Internal Server Error" });
+//     }
+// });
+
+// PUT endpoint to like/unlike a post
+router.put("/like/:id", async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { isLiked } = req.body;
+
+    const post = await postModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (isLiked) {
+      post.likesCount += 1;
+      post.isLiked = true;
+    } else {
+      post.likesCount -= 1;
+      post.isLiked = false;
+    }
+
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    console.error("Error updating like status:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+module.exports =
+  // PUT endpoint to update a post by ID
+  router.put("/update/:id", async (req, res) => {
     try {
-        const postId = req.params.id;
-        const { title, description, story, category, author } = req.body;
-        const updateData = { title, description, story, category, author };
+      const postId = req.params.id;
+      const { title, description, story, category, author, image_url } =
+        req.body;
+      const updateData = {
+        title,
+        description,
+        story,
+        category,
+        author,
+        image_url,
+      };
+      console.log(updateData);
 
-        if (req.file) {
-            const imageBuffer = Buffer.from(req.file.buffer, "utf-8");
-            updateData.image_url = imageBuffer;
-        }
+      const updatedPost = await postModel.findByIdAndUpdate(
+        postId,
+        updateData,
+        { new: true }
+      );
 
-        const updatedPost = await postModel.findByIdAndUpdate(postId, updateData, { new: true });
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Post not found" });
+      }
 
-        if (!updatedPost) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-
-        const base64Image = updatedPost.image_url.toString('base64');
-        const postWithBase64Image = {
-            ...updatedPost._doc,
-            image_url: base64Image
-        };
-
-        res.status(200).json(postWithBase64Image);
+      res.status(200).json(updatedPost);
     } catch (error) {
-        console.error('Error updating post:', error);
-        res.status(500).json({ message: 'Internal server error' });
+      console.error("Error updating post:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-});
+  });
 
 // DELETE endpoint to delete a post by ID
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const deletedPost = await postModel.findByIdAndDelete(postId);
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const deletedPost = await postModel.findByIdAndDelete(postId);
 
-        if (!deletedPost) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-
-        res.status(200).json({ message: 'Post deleted successfully' });
-    } catch (error) {
-        console.error('Error deleting post:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (!deletedPost) {
+      return res.status(404).json({ message: "Post not found" });
     }
+
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 module.exports = router;
