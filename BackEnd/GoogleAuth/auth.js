@@ -51,7 +51,7 @@ passport.use(
           httpOnly: false,
         });
 
-        console.log(user);
+        console.log("Cookies set: ", request.res.getHeader('Set-Cookie'));
         return done(null, user);
       } catch (error) {
         console.error("Error in Google strategy:", error);
