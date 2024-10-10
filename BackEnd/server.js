@@ -23,7 +23,7 @@ app.use(passport.session());
 
 app.use(cors(
   {
-    origin: "http://localhost:5173",
+    origin: "https://lively-chebakia-535084.netlify.app",
     credentials: true
   }
 ))
@@ -42,8 +42,8 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:5173/main",
-    failureRedirect: "http://localhost:5173/login",
+    successRedirect: "https://lively-chebakia-535084.netlify.app/main",
+    failureRedirect: "https://lively-chebakia-535084.netlify.app/login",
   })
 );
 
