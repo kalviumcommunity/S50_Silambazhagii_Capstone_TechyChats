@@ -41,10 +41,14 @@ app.get(
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "https://lively-chebakia-535084.netlify.app/main",
-    failureRedirect: "https://lively-chebakia-535084.netlify.app/login",
-  })
+  passport.authenticate("google", { failureRedirect: "https://lively-chebakia-535084.netlify.app/login" }),
+  (req, res) => {
+    // Send back the user information as JSON along with cookies
+    res.json({
+      userId: req.user._id,
+      name: req.user.name,
+    });
+  }
 );
 
 app.use("/users", userRouter);
