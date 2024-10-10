@@ -25,10 +25,13 @@ function MainPage() {
 
   const [like, setLike] = useState(0);
   const [bookmark, setBookmark] = useState(false);
+  const [search, setSearch] = useState('');
+
 
   const [likedPosts, setLikedPosts] = useState({});
 
   const [load, setLoad] = useState(true);
+  const [data, setData] = useState(true);
   const [account, setAccount] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
@@ -67,48 +70,81 @@ function MainPage() {
     }
   }, []);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/posts")
-      .then((response) => {
-        setPosts(response.data);
-        setLoad(false);
-        // Initialize likedPosts state with data from the server (if available)
-        setLikedPosts(
-          response.data.reduce(
-            (acc, post) => ({ ...acc, [post._id]: false }),
-            {}
-          ) // Set initial like state to false for all posts
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoad(false);
-      });
-  }, []);
+  // useEffect(()=>{
+  //   axios.get("http://localhost:3000/posts")
+  //   .then((response) =>{
+  //     const data = response.data;
+  //     setData(data);
+  //     console.log("dadas",response.data)
+  //   })
+  // })
 
-  const handleLikeToggle = async (postId) => {
-    try {
-      const isLiked = likedPosts[postId]; // Get current like status from state
-      const response = await axios.put(
-        `http://localhost:3000/posts/like/${postId}`,
-        { isLiked: !isLiked }
-      );
-      const updatedPost = response.data;
+//   const filteredData = data.filter((data) =>
+//   data.title.toLowerCase().startsWith(search.toLowerCase())
+// );
 
-      setPosts((prevPosts) =>
-        prevPosts.map((post) => (post._id === postId ? updatedPost : post))
-      );
+useEffect(() => {
+  axios
+    .get("http://localhost:3000/posts")
+    .then((response) => {
+      setPosts(response.data);
+      setLoad(false);
 
-      // Update like status in state
-      setLikedPosts((prevLikedPosts) => ({
-        ...prevLikedPosts,
-        [postId]: !isLiked,
-      }));
-    } catch (error) {
-      console.error("Error updating like status:", error);
-    }
-  };
+      const userId = Cookies.get("userId").replace(/"/g, "");
+      
+      // Check if the user ID is in the likes array of each post
+      const initialLikedPosts = response.data.reduce((acc, post) => {
+        acc[post._id] = post.likes.includes(userId); // Set to true if userId is in likes array
+        return acc;
+      }, {});
+      
+      setLikedPosts(initialLikedPosts);
+    })
+    .catch((error) => {
+      console.log(error);
+      setLoad(false);
+    });
+}, []);
+
+
+const handleLikeToggle = async (postId) => {
+  // Optimistically update the liked state in the frontend
+  const isCurrentlyLiked = likedPosts[postId];
+  setLikedPosts({ ...likedPosts, [postId]: !isCurrentlyLiked });
+
+  // Find and update the specific post's like count immediately
+  setPosts(posts.map(post =>
+    post._id === postId
+      ? { ...post, likes: isCurrentlyLiked ? post.likes - 1 : post.likes + 1 }
+      : post
+  ));
+
+  try {
+    // Send the like/unlike request to the server
+    const response = await axios.patch(`http://localhost:3000/posts/like/${postId}`, {
+      action: !isCurrentlyLiked ? 'like' : 'unlike',
+      userId: Cookies.get("userId").replace(/"/g, "")
+    });
+
+    const updatedPost = response.data;
+
+    // Update the post data with server response if needed
+    setPosts(posts.map(post =>
+      post._id === postId ? { ...post, likes: updatedPost.likes } : post
+    ));
+  } catch (error) {
+    console.error(error);
+
+    // Rollback optimistic update on error
+    setLikedPosts({ ...likedPosts, [postId]: isCurrentlyLiked });
+    setPosts(posts.map(post =>
+      post._id === postId
+        ? { ...post, likes: isCurrentlyLiked ? post.likes + 1 : post.likes - 1 }
+        : post
+    ));
+  }
+};
+
 
   return (
     <>
@@ -297,7 +333,7 @@ function MainPage() {
                               {post.title}
                             </h1>
                             <p
-                              className="font-semibold"
+                              className=" font-large text-gray-500"
                               onClick={() => handlePostClick(post._id)}
                             >
                               {post.description}
@@ -313,7 +349,7 @@ function MainPage() {
                                 {account && (
                                   <div className="text-sm ml-2">{UserName}</div>
                                 )}
-                                <div className="heart-container" title="Like">
+                                {/* <div className="heart-container" title="Like">
                                   <input
                                     type="checkbox"
                                     className="checkbox"
@@ -356,11 +392,29 @@ function MainPage() {
                                       <polygon points="80,80 70,70"></polygon>
                                     </svg>
                                   </div>
-                                </div>
+                                </div> */}
+<div className="heart-container" title="Like">
+  <input
+    type="checkbox"
+    className="checkbox"
+    id={`like-${post._id}`}
+    checked={likedPosts[post._id] || false}
+    onChange={() => handleLikeToggle(post._id)}
+  />
+  <div className="svg-container">
+    <svg
+      viewBox="0 0 24 24"
+      className={likedPosts[post._id] ? "svg-filled" : "svg-outline"}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z" />
+    </svg>
+  </div>
+</div>
 
-                                <div className="text-xs ml-1 flex flex-row ">
-                                  {post.likes || 0}
-                                </div>
+<div className="text-xs ml-1 flex flex-row ">
+  {post.likes.length || 0}
+</div>
 
                                 {/* <div className="text-xs ml-1">{like}</div> */}
                                 <img
@@ -566,13 +620,6 @@ function MainPage() {
             </div>
           )}
         </div>
-        {/* {activeCommentPost && (
-          <CommentBox
-            entity={activeCommentPost}
-            onClose={handleCloseCommentBox}
-            type="posts"
-          />
-        )} */}
       </div>
     </>
   );

@@ -89,6 +89,7 @@ router.post("/:id/comments", async (req, res) => {
   res.status(200).json({ name: user.name, message, profile, postedTime });
 });
 
+
 // DELETE endpoint to delete a comment from a post
 router.delete("/:postId/comments/:commentId", async (req, res) => {
   const { postId, commentId } = req.params;
@@ -115,77 +116,119 @@ router.delete("/:postId/comments/:commentId", async (req, res) => {
   }
 });
 
+router.post('/:postId/like', async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.body.userId; // Assuming you send userId in the request body
 
-// router.post("/addcomment", async (req, res) => {
-//     try {
-//       const { postid, name, comment, profilepic } = req.body;
-//       const post = await Post.findById(postid);
+  try {
+      const post = await postModel.findById(postId);
 
-//       if (!post) {
-//         return res.status(404).json({ error: "Post not found" });
-//       }
+      // Check if user has already liked the post
+      if (post.likedBy.includes(userId)) {
+          return res.status(400).json({ message: 'You have already liked this post' });
+      }
 
-//       post.comments.push({ name, comment, profilepic });
+      // Update the like count and the list of users who liked the post
+      post.likes += 1; 
+      post.likedBy.push(userId);
+      await post.save();
 
-//       await post.save();
+      res.json({ likes: post.likes, message: 'Post liked successfully!' });
+  } catch (error) {
+      res.status(500).json({ message: 'Something went wrong', error });
+  }
+});
 
-//       res.status(200).json({ message: "Comment added successfully" });
-//     } catch (error) {
-//       console.error("Error adding comment:", error);
-//       res.status(500).json({ error: "Internal Server Error" });
-//     }
-//   });
-
-//   router.post("/addcomment", async (req, res) => {
-//     try {
-//         const { postid, name, message, profile } = req.body;  // Fixed the field names
-//         const post = await Post.findById(postid);
-
-//         if (!post) {
-//             return res.status(404).json({ error: "Post not found" });
-//         }
-
-//         // Add new comment to the post
-//         post.comments.push({ name, message, profile });
-
-//         // Save the updated post
-//         await post.save();
-
-//         res.status(200).json({ message: "Comment added successfully" });
-//     } catch (error) {
-//         console.error("Error adding comment:", error);
-//         res.status(500).json({ error: "Internal Server Error" });
-//     }
-// });
 
 // PUT endpoint to like/unlike a post
-router.put("/like/:id", async (req, res) => {
-  try {
-    const postId = req.params.id;
-    const { isLiked } = req.body;
+// router.put("/like/:postId", async (req, res) => {
+//   const postId = req.params.postId; // Ensure this matches your URL parameter
+//   const { isLiked, userId } = req.body;
 
+//   try {
+//     const post = await postModel.findById(postId);
+//     if (!post) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//     if (isLiked) {
+//       // If the post is liked, check if the user has already liked it
+//       if (!post.likedBy.includes(userId)) {
+//         post.likesCount += 1;
+//         post.likedBy.push(userId);
+//       }
+//     } else {
+//       // If the post is unliked, check if the user has liked it
+//       if (post.likedBy.includes(userId)) {
+//         post.likesCount -= 1;
+//         post.likedBy = post.likedBy.filter(id => id !== userId); // Remove userId from likedBy
+//       }
+//     }
+
+//     await post.save();
+//     res.json({ likesCount: post.likesCount, likedBy: post.likedBy });
+//   } catch (error) {
+//     console.error("Error updating like status:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+
+
+
+router.patch("/like/:id", async (req, res) => {
+  const postId = req.params.id;
+  const { action, userId } = req.body;
+
+  try {
     const post = await postModel.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    if (isLiked) {
-      post.likesCount += 1;
-      post.isLiked = true;
+    let updatedPost;
+    
+    if (action === "like") {
+      if (!post.likes.includes(userId)) {
+        updatedPost = await postModel.findByIdAndUpdate(
+          postId,
+          { $addToSet: { likes: userId } },
+          { new: true }
+        )
+
+
+        console.log("added like");
+      } else {
+        return res.status(400).json({ message: "You already liked this post" });
+      }
+    } else if (action === "unlike") {
+      if (post.likes.includes(userId)) {
+        updatedPost = await postModel.findByIdAndUpdate(
+          postId,
+          { $pull: { likes: userId } },
+          { new: true }
+        )
+
+        console.log("removed like");
+      } else {
+        return res.status(400).json({ message: "You haven't liked this post" });
+      }
     } else {
-      post.likesCount -= 1;
-      post.isLiked = false;
+      return res.status(400).json({ message: "Invalid action" });
     }
 
-    await post.save();
-    res.json(post);
+    const responseData = {
+      likes: updatedPost.likes,
+    };
+    res.json(responseData);
   } catch (error) {
-    console.error("Error updating like status:", error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-module.exports =
+
+
+
   // PUT endpoint to update a post by ID
   router.put("/update/:id", async (req, res) => {
     try {

@@ -98,15 +98,17 @@ router.put("/:id", async (req, res) => {
   try {
     const userId = req.params.id;
     const data = req.body;
+    console.log(data)
 
     // Find the user by ID and update it with the data from req.body
-    const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true });
+    const updatedUser = await userModel.findByIdAndUpdate(userId, data, { new: true });
     
     if (!updatedUser) {
       return res.status(404).send("User not found");
     }
 
     res.status(200).json(updatedUser);
+    console.log(updatedUser)
   } catch (error) {
     console.log(error);
     res.status(500).send("An error occurred");
