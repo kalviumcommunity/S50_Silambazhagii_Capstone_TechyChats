@@ -20,7 +20,7 @@ function Account() {
   const [userData, setUserData] = useState({});
   const [skills, setSkills] = useState("");
   const [dob, setDob] = useState(new Date());
-  const [place, setPlace] = useState(""); 
+  const [place, setPlace] = useState("");
 
   const navigate = useNavigate();
 
@@ -31,6 +31,7 @@ function Account() {
         console.log(response);
         setUpdatedUserEmail(response.data.email);
         setUpdatedUserName(response.data.name);
+        setUpdatedUserBio(response.data.bio);
         setSkills(response.data.skills || "");
         setDob(new Date(response.data.dob || Date.now()));
         setPlace(response.data.place || "");
@@ -52,11 +53,13 @@ function Account() {
     setEditMode(!editMode);
   };
 
+  
   const handleSubmit = () => {
-    console.log(updatedUserBio)
-    console.log(skills)
-    console.log(place)
-    console.log(dob)
+    console.log(updatedUserBio);
+    console.log(skills);
+    console.log(place);
+    console.log(dob);
+  
     axios
       .put(`http://localhost:3000/users/${userId}`, {
         name: updatedUserName,
@@ -70,16 +73,25 @@ function Account() {
         setUpdatedUserEmail(response.data.email);
         setUpdatedUserName(response.data.name);
         setUpdatedUserBio(response.data.bio);
-        setDob(response.data.dob);
+  
+        // Parse the dob into a Date object for DatePicker usage
+        const newDob = new Date(response.data.dob);
+        setDob(newDob);
+        
         setSkills(response.data.skills);
-
         setEditMode(false);
+  
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
     // navigate("/main");
   };
+  
+  // Display formatted DOB in non-edit mode
+  const formattedDob = dob ? new Intl.DateTimeFormat('en-GB').format(dob) : "No Date Provided";
+  
 
   const logout = () => {
     Cookies.remove("userId");
@@ -225,7 +237,7 @@ function Account() {
                     className="border rounded-md px-2 py-1 w-3/4"
                   />
                 ) : (
-                  <div>{dob?.toLocaleDateString() || "No Date Provided"}</div>
+                  <div>{formattedDob || "No Date Provided"}</div>
                 )}
               </div>
               <div className="flex items-center w-full">

@@ -8,6 +8,7 @@ function Comments({ post, onClose }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
 
+
   useEffect(() => {
     // Fetch comments for the post
     axios.get(`http://localhost:3000/posts/${post._id}/comments`)
@@ -45,10 +46,10 @@ function Comments({ post, onClose }) {
     // Check if timestamp is a valid date
     const commentDate = new Date(timestamp);
     
-    if (isNaN(commentDate)) {
-      console.error('Invalid date:', timestamp);
-      return 'Invalid date'; // Handle invalid date
-    }
+    // if (isNaN(commentDate)) {
+    //   console.error('Invalid date:', timestamp);
+    //   return 'Invalid date'; // Handle invalid date
+    // }
   
     const now = new Date();
     const diffInSeconds = Math.floor((now - commentDate) / 1000);
@@ -86,7 +87,7 @@ function Comments({ post, onClose }) {
                 </div>
                 <div className="ml-3 w-full">
                   <div className="h-6 flex justify-between items-center">
-                    <div className="font-medium text-sm poppins text-gray-800">
+                    <div className="font-medium text-sm poppins text-gray-500">
                       {comment.name}
                     </div>
                     {comment.profile === userId && (
@@ -99,7 +100,7 @@ function Comments({ post, onClose }) {
                     )}
                   </div>
                   <div className="poppins text-xs text-gray-500">
-                    {formatTime(comment.createdAt)} {/* Use the appropriate field for the timestamp */}
+                    {/* {formatTime(comment.createdAt)} */}
                   </div>
                   <div className="mt-1 poppins text-black">{comment.message}</div>
                 </div>
@@ -107,7 +108,7 @@ function Comments({ post, onClose }) {
             ))
           ) : (
             <div className="flex justify-center items-center mt-12">
-              <h1 className="poppins text-gray">Be the first to comment.</h1>
+              {/* <h1 className="poppins text-gray">Be the first to comment.</h1> */}
             </div>
           )}
         </div>

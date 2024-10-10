@@ -14,18 +14,6 @@ const commentsSchema = new mongoose.Schema({
     }
 });
 
-// const postSchema = new mongoose.Schema({
-//     title: String,
-//     description: String,
-//     story: String,
-//     likes: Number,
-//     image_url: String,
-//     video: String,
-//     category: String,
-//     author: String,
-//  // Added the comments array
-// });
-
 
 const postSchema = new mongoose.Schema({
     title: {
@@ -37,9 +25,10 @@ const postSchema = new mongoose.Schema({
     story: {
         type: String,
     },
-    likes: {
-        type: Number,
-    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      }],
     image_url: {
         type: String,
     },

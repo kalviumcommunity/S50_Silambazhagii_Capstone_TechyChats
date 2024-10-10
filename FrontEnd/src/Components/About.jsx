@@ -40,7 +40,7 @@ function About() {
             <p className="mt-5">
               At TechyChats, our mission is simple: to empower and inspire tech
               enthusiasts of all levels, and to demystify technology and make it
-              accessible to everyone. Whether you're a seasoned tech enthusiast
+              accessible to everyone. Whether  you're a seasoned tech enthusiast
               or just dipping your toes into the digital waters, or someone
               simply curious about the latest gadgets and innovations, we aim to
               provide informative, engaging content that empowers you to

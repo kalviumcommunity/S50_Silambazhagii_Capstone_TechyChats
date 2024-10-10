@@ -18,22 +18,6 @@ app.use(session({
   cookie: { secure: false },
 }));
 
-// // Backend route for getting and adding comments
-// app.get('/posts/:id/comments', (req, res) => {
-//   const postId = req.params.id;
-//   // Fetch comments from the database by postId
-//   const comments = getCommentsByPostId(postId);
-//   res.json(comments);
-// });
-
-// app.post('/posts/:id/comments', (req, res) => {
-//   const postId = req.params.id;
-//   const { author, text } = req.body;
-//   // Add a comment to the database
-//   const newComment = addCommentToPost(postId, author, text);
-//   res.status(201).json(newComment);
-// });
-
 app.use(passport.initialize());
 app.use(passport.session());
 
