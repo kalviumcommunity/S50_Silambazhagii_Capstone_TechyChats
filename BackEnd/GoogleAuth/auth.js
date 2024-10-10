@@ -53,7 +53,6 @@ passport.use(
         request.res.cookie("name", String(profile.given_name), {
           httpOnly: false,
           sameSite: "None",
-          domain: "lively-chebakia-535084.netlify.app",
         });
 
         console.log("Cookies set: ", request.res.getHeader('Set-Cookie'));
