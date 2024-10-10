@@ -44,11 +44,16 @@ passport.use(
         }
 
         // Set cookies
-        request.res.cookie("userId", JSON.stringify(user._id), {
+         request.res.cookie("userId", user._id, {
           httpOnly: false,
+          sameSite: "None",
+          domain: "lively-chebakia-535084.netlify.app",
         });
-        request.res.cookie("name", JSON.stringify(profile.given_name), {
+
+        request.res.cookie("name", String(profile.given_name), {
           httpOnly: false,
+          sameSite: "None",
+          domain: "lively-chebakia-535084.netlify.app",
         });
 
         console.log("Cookies set: ", request.res.getHeader('Set-Cookie'));
