@@ -23,7 +23,10 @@ app.use(passport.session());
 
 app.use(cors(
   {
-    origin: "https://lively-chebakia-535084.netlify.app",
+    origin: [
+    "https://lively-chebakia-535084.netlify.app", 
+    "http://localhost:5173"
+  ],
     credentials: true
   }
 ))
